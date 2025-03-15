@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bus, MapPin, AlertTriangle, Check, Clock } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -42,21 +41,21 @@ const ContributePage = () => {
       id: 'delay', 
       icon: <Clock size={24} />, 
       label: 'Atrasado', 
-      color: 'bg-bus-yellow text-black',
+      color: 'bg-yellow-500 text-black',
       selected: false 
     },
     { 
       id: 'full', 
       icon: <Bus size={24} />, 
       label: 'Lotado', 
-      color: 'bg-bus-orange text-white',
+      color: 'bg-orange-500 text-white',
       selected: false 
     },
     { 
       id: 'breakdown', 
       icon: <AlertTriangle size={24} />, 
       label: 'Quebrado', 
-      color: 'bg-bus-red text-white',
+      color: 'bg-red-500 text-white',
       selected: false 
     },
   ]);
@@ -106,7 +105,7 @@ const ContributePage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 bg-background shadow-soft p-4">
+      <header className="sticky top-0 z-10 bg-background shadow-md p-4">
         <div className="flex justify-between items-center max-w-5xl mx-auto">
           <Link to="/" className="focus-ring rounded-full p-2">
             <ArrowLeft size={24} />
@@ -122,20 +121,15 @@ const ContributePage = () => {
         <div className="max-w-5xl mx-auto">
           {!showConfirmation ? (
             <>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mb-6"
-              >
-                <Card className="p-5 bg-bus-blue/10 border-bus-blue/30">
+              <div className="mb-6">
+                <Card className="p-5 bg-blue-100 border-blue-300">
                   <h2 className="text-xl font-semibold mb-2">Contribua com informações</h2>
                   <p className="text-muted-foreground">
                     Suas contribuições ajudam outras pessoas a se planejarem melhor. 
                     Selecione um tipo de contribuição abaixo.
                   </p>
                 </Card>
-              </motion.div>
+              </div>
 
               <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
                 <TabsList className="grid grid-cols-3 mb-6">
@@ -157,17 +151,12 @@ const ContributePage = () => {
                   <h3 className="text-lg font-medium mb-3">Selecione em qual ônibus você está:</h3>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {busOptions.map((bus, index) => (
-                      <motion.div
-                        key={bus.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
-                      >
+                    {busOptions.map((bus) => (
+                      <div key={bus.id}>
                         <button
                           className={`w-full text-left p-4 rounded-xl border transition-all ${
                             bus.selected 
-                            ? 'border-2 border-primary bg-primary/5 shadow-medium' 
+                            ? 'border-2 border-primary bg-primary/5 shadow-md' 
                             : 'border-border bg-card hover:bg-accent/50'
                           }`}
                           onClick={() => handleSelectBus(bus.id)}
@@ -188,7 +177,7 @@ const ContributePage = () => {
                             )}
                           </div>
                         </button>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </TabsContent>
@@ -197,17 +186,12 @@ const ContributePage = () => {
                   <h3 className="text-lg font-medium mb-3">Selecione o ônibus que você viu passar:</h3>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {busOptions.map((bus, index) => (
-                      <motion.div
-                        key={bus.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
-                      >
+                    {busOptions.map((bus) => (
+                      <div key={bus.id}>
                         <button
                           className={`w-full text-left p-4 rounded-xl border transition-all ${
                             bus.selected 
-                            ? 'border-2 border-primary bg-primary/5 shadow-medium' 
+                            ? 'border-2 border-primary bg-primary/5 shadow-md' 
                             : 'border-border bg-card hover:bg-accent/50'
                           }`}
                           onClick={() => handleSelectBus(bus.id)}
@@ -228,7 +212,7 @@ const ContributePage = () => {
                             )}
                           </div>
                         </button>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </TabsContent>
@@ -237,17 +221,12 @@ const ContributePage = () => {
                   <h3 className="text-lg font-medium mb-3">Selecione o ônibus com problema:</h3>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                    {busOptions.map((bus, index) => (
-                      <motion.div
-                        key={bus.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
-                      >
+                    {busOptions.map((bus) => (
+                      <div key={bus.id}>
                         <button
                           className={`w-full text-left p-4 rounded-xl border transition-all ${
                             bus.selected 
-                            ? 'border-2 border-primary bg-primary/5 shadow-medium' 
+                            ? 'border-2 border-primary bg-primary/5 shadow-md' 
                             : 'border-border bg-card hover:bg-accent/50'
                           }`}
                           onClick={() => handleSelectBus(bus.id)}
@@ -268,7 +247,7 @@ const ContributePage = () => {
                             )}
                           </div>
                         </button>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
 
@@ -277,17 +256,12 @@ const ContributePage = () => {
                       <h3 className="text-lg font-medium mb-3">Qual é o problema?</h3>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {issueTypes.map((issue, index) => (
-                          <motion.div
-                            key={issue.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05, duration: 0.3 }}
-                          >
+                        {issueTypes.map((issue) => (
+                          <div key={issue.id}>
                             <button
                               className={`w-full p-4 rounded-xl border transition-all ${
                                 issue.selected 
-                                ? 'border-2 border-primary bg-primary/5 shadow-medium' 
+                                ? 'border-2 border-primary bg-primary/5 shadow-md' 
                                 : 'border-border bg-card hover:bg-accent/50'
                               }`}
                               onClick={() => handleSelectIssue(issue.id)}
@@ -299,7 +273,7 @@ const ContributePage = () => {
                                 <h4 className="font-medium">{issue.label}</h4>
                               </div>
                             </button>
-                          </motion.div>
+                          </div>
                         ))}
                       </div>
                     </>
@@ -310,7 +284,7 @@ const ContributePage = () => {
               <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
                 <div className="max-w-5xl mx-auto">
                   <Button 
-                    className="w-full btn-large"
+                    className="w-full py-3 text-lg"
                     disabled={!canSubmit || submitting}
                     onClick={handleSubmit}
                   >
@@ -324,14 +298,9 @@ const ContributePage = () => {
               </div>
             </>
           ) : (
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col items-center justify-center text-center p-6"
-            >
-              <div className="w-20 h-20 bg-bus-green/20 rounded-full flex items-center justify-center mb-6">
-                <Check className="text-bus-green" size={40} />
+            <div className="flex flex-col items-center justify-center text-center p-6">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <Check className="text-green-600" size={40} />
               </div>
               
               <h2 className="text-2xl font-bold mb-2">Obrigado pela sua contribuição!</h2>
@@ -395,7 +364,7 @@ const ContributePage = () => {
                   Voltar ao início
                 </Button>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </main>

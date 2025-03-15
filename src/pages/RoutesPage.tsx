@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 const RoutesPage = () => {
@@ -32,7 +31,7 @@ const RoutesPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 bg-background shadow-soft p-4">
+      <header className="sticky top-0 z-10 bg-background shadow-md p-4">
         <div className="flex justify-between items-center max-w-5xl mx-auto">
           <Link to="/" className="focus-ring rounded-full p-2">
             <ArrowLeft size={24} />
@@ -77,14 +76,9 @@ const RoutesPage = () => {
                 </div>
               ) : (
                 filteredRoutes.map((route, idx) => (
-                  <motion.div 
-                    key={route.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
-                  >
+                  <div key={route.id}>
                     <Link to={`/rotas/${route.id}`}>
-                      <Card className="card-route border-l-4 bg-white" style={{ borderLeftColor: route.color }}>
+                      <Card className="p-4 border-l-4 bg-white hover:shadow-md transition-shadow" style={{ borderLeftColor: route.color }}>
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
@@ -127,19 +121,14 @@ const RoutesPage = () => {
                         </div>
                       </Card>
                     </Link>
-                  </motion.div>
+                  </div>
                 ))
               )}
             </TabsContent>
 
             <TabsContent value="schedule" className="space-y-6">
               {busRoutes.map((route, idx) => (
-                <motion.div
-                  key={route.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05, duration: 0.3 }}
-                >
+                <div key={route.id}>
                   <Card className="p-4">
                     <div className="flex items-center gap-2 mb-3">
                       <div 
@@ -169,7 +158,7 @@ const RoutesPage = () => {
                       </div>
                     </div>
                   </Card>
-                </motion.div>
+                </div>
               ))}
             </TabsContent>
           </Tabs>

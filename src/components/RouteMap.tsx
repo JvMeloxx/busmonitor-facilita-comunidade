@@ -81,7 +81,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
               className="absolute z-10 transform -translate-x-1/2 -translate-y-1/2"
               style={{ top: stop.coordinates.y, left: stop.coordinates.x }}
             >
-              <div className="w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center shadow-medium" style={{ borderColor: routeColor }}>
+              <div className="w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center shadow-md" style={{ borderColor: routeColor }}>
                 <span className="text-xs font-bold">{index + 1}</span>
               </div>
             </div>
@@ -91,16 +91,16 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
           {updates.map((update, index) => (
             <div 
               key={index}
-              className="absolute bus-marker z-20 transform -translate-x-1/2 -translate-y-1/2"
+              className="absolute z-20 transform -translate-x-1/2 -translate-y-1/2"
               style={{ top: update.coordinates.y, left: update.coordinates.x }}
             >
               <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-medium"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-md"
                 style={{ backgroundColor: routeColor }}
               >
                 <span>{route.number}</span>
               </div>
-              <div className="mt-1 px-2 py-1 bg-white rounded-md shadow-soft text-xs font-medium whitespace-nowrap">
+              <div className="mt-1 px-2 py-1 bg-white rounded-md shadow-sm text-xs font-medium whitespace-nowrap">
                 {update.time}
               </div>
             </div>
@@ -109,7 +109,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
       </div>
       
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-soft">
+      <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
         <div className="flex items-center mb-1.5">
           <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: routeColor }}></div>
           <span className="text-xs">Rota do ônibus</span>

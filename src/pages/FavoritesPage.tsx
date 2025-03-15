@@ -5,7 +5,6 @@ import { ArrowLeft, Clock, MapPin, ChevronRight, Star, Bus, PlusCircle } from 'l
 import { busRoutes, recentUpdates } from '../data/busData';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 
 const FavoritesPage = () => {
@@ -45,7 +44,7 @@ const FavoritesPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 bg-background shadow-soft p-4">
+      <header className="sticky top-0 z-10 bg-background shadow-md p-4">
         <div className="flex justify-between items-center max-w-5xl mx-auto">
           <Link to="/" className="focus-ring rounded-full p-2">
             <ArrowLeft size={24} />
@@ -85,15 +84,10 @@ const FavoritesPage = () => {
               </div>
               
               <div className="space-y-4">
-                {favoriteRoutes.map((route, idx) => (
-                  <motion.div 
-                    key={route.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
-                  >
+                {favoriteRoutes.map((route) => (
+                  <div key={route.id}>
                     <Link to={`/rotas/${route.id}`}>
-                      <Card className="card-route border-l-4 bg-white" style={{ borderLeftColor: route.color }}>
+                      <Card className="p-4 border-l-4 bg-white hover:shadow-md transition-shadow" style={{ borderLeftColor: route.color }}>
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
@@ -104,7 +98,7 @@ const FavoritesPage = () => {
                             </div>
                             
                             {lastUpdates[route.id] && (
-                              <div className="mb-2 bg-bus-green/10 text-bus-green inline-block text-sm font-medium px-2 py-1 rounded-md">
+                              <div className="mb-2 bg-green-100 text-green-700 inline-block text-sm font-medium px-2 py-1 rounded-md">
                                 <Bus size={14} className="inline mr-1" />
                                 {lastUpdates[route.id]}
                               </div>
@@ -142,7 +136,7 @@ const FavoritesPage = () => {
                         </div>
                       </Card>
                     </Link>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
               

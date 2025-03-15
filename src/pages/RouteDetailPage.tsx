@@ -6,7 +6,6 @@ import { busRoutes, recentUpdates } from '../data/busData';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import RouteMap from '../components/RouteMap';
 
@@ -49,7 +48,7 @@ const RouteDetailPage = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header 
-        className="sticky top-0 z-10 p-4 shadow-medium"
+        className="sticky top-0 z-10 p-4 shadow-md"
         style={{ backgroundColor: `${route.color}` }}
       >
         <div className="flex justify-between items-center max-w-5xl mx-auto">
@@ -80,7 +79,7 @@ const RouteDetailPage = () => {
           <p className="text-muted-foreground">{route.description}</p>
           
           {recentUpdate && (
-            <div className="mt-3 mb-1 bg-bus-green/10 text-bus-green inline-block text-sm font-medium px-2 py-1 rounded-md">
+            <div className="mt-3 mb-1 bg-green-100 text-green-700 inline-block text-sm font-medium px-2 py-1 rounded-md">
               <Bus size={14} className="inline mr-1" />
               {recentUpdate.status}
             </div>
@@ -131,11 +130,7 @@ const RouteDetailPage = () => {
         <div className="p-4 pb-20">
           <div className="max-w-5xl mx-auto">
             <TabsContent value="info" className="mt-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
+              <div>
                 <Card className="p-4 mb-6">
                   <h2 className="text-lg font-semibold mb-2">Sobre esta linha</h2>
                   <p className="text-muted-foreground">
@@ -165,18 +160,14 @@ const RouteDetailPage = () => {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </TabsContent>
 
             <TabsContent value="schedule" className="mt-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="p-4 mb-6 bg-bus-blue/10 border-bus-blue/30">
+              <div>
+                <Card className="p-4 mb-6 bg-blue-100 border-blue-300">
                   <div className="flex gap-3 items-start">
-                    <div className="p-2 bg-bus-blue rounded-full text-white">
+                    <div className="p-2 bg-blue-600 rounded-full text-white">
                       <Clock size={18} />
                     </div>
                     <div>
@@ -222,31 +213,26 @@ const RouteDetailPage = () => {
                 <Card className="p-4">
                   <div className="space-y-3">
                     <div className="flex gap-2 items-start">
-                      <AlertTriangle size={18} className="text-bus-yellow shrink-0 mt-0.5" />
+                      <AlertTriangle size={18} className="text-yellow-500 shrink-0 mt-0.5" />
                       <p className="text-sm">Os horários podem variar em até 10 minutos devido às condições do trânsito.</p>
                     </div>
                     <div className="flex gap-2 items-start">
-                      <AlertTriangle size={18} className="text-bus-yellow shrink-0 mt-0.5" />
+                      <AlertTriangle size={18} className="text-yellow-500 shrink-0 mt-0.5" />
                       <p className="text-sm">Aos domingos e feriados, o ônibus opera com horários reduzidos.</p>
                     </div>
                     <div className="flex gap-2 items-start">
-                      <CheckCircle size={18} className="text-bus-green shrink-0 mt-0.5" />
+                      <CheckCircle size={18} className="text-green-600 shrink-0 mt-0.5" />
                       <p className="text-sm">Gratuito para todos os cidadãos. Basta embarcar!</p>
                     </div>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             </TabsContent>
 
             <TabsContent value="map" className="mt-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="h-[calc(100vh-220px)] min-h-[400px]"
-              >
+              <div className="h-[calc(100vh-220px)] min-h-[400px]">
                 <RouteMap routeId={route.id} routeColor={route.color} />
-              </motion.div>
+              </div>
             </TabsContent>
           </div>
         </div>

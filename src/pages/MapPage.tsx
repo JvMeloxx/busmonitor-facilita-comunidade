@@ -1,195 +1,108 @@
 
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Search, Bus, Map as MapIcon, ListFilter, Info } from 'lucide-react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import BusMap from '../components/BusMap';
+import { ArrowLeft, MapPin, Bus, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
-import { busRoutes, recentUpdates } from '../data/busData';
+import BusMap from '../components/BusMap';
+import { busRoutes } from '../data/busData';
 
 const MapPage = () => {
-  const [view, setView] = useState<'map' | 'list'>('map');
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [showRouteSelector, setShowRouteSelector] = useState(false);
 
-  // Filter routes based on search term
-  const filteredRoutes = busRoutes.filter(route => 
-    route.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    route.number.toString().includes(searchTerm)
-  );
-
-  // Show welcome toast on first load
-  useEffect(() => {
-    if (showIntro) {
-      toast.info(
-        'Bem-vindo ao mapa de ônibus!',
-        {
-          description: 'Aqui você pode ver todas as linhas de ônibus disponíveis.',
-          duration: 5000,
-        }
-      );
-      setShowIntro(false);
-    }
-  }, [showIntro]);
+  const toggleRouteSelector = () => {
+    setShowRouteSelector(!showRouteSelector);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-10 bg-background shadow-soft p-4">
+      <header className="sticky top-0 z-10 bg-background shadow-md p-4">
         <div className="flex justify-between items-center max-w-5xl mx-auto">
           <Link to="/" className="focus-ring rounded-full p-2">
             <ArrowLeft size={24} />
           </Link>
           
-          <h1 className="text-xl font-semibold">Ver Ônibus</h1>
+          <h1 className="text-xl font-semibold">Mapa de Ônibus</h1>
           
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className={`rounded-full ${view === 'map' ? 'bg-accent' : ''}`}
-              onClick={() => setView('map')}
-            >
-              <MapIcon size={18} />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className={`rounded-full ${view === 'list' ? 'bg-accent' : ''}`}
-              onClick={() => setView('list')}
-            >
-              <Bus size={18} />
-            </Button>
-          </div>
+          <Button 
+            variant="outline"
+            size="icon" 
+            className="rounded-full"
+            onClick={toggleRouteSelector}
+          >
+            <Filter size={20} />
+          </Button>
         </div>
       </header>
 
-      <div className="p-4 border-b">
-        <div className="max-w-5xl mx-auto flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-            <Input 
-              placeholder="Buscar por número ou nome da linha" 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 py-6 text-lg"
-            />
-          </div>
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="rounded-full h-12 w-12"
-            onClick={() => setFilterOpen(!filterOpen)}
-          >
-            <ListFilter size={18} />
-          </Button>
-        </div>
-      </div>
-
-      <main className="flex-1 p-4">
-        <div className="max-w-5xl mx-auto">
-          {view === 'map' ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="h-[calc(100vh-220px)] min-h-[400px] rounded-xl overflow-hidden shadow-medium"
-            >
-              <BusMap selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} />
-            </motion.div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="grid gap-4"
-            >
-              <Card className="p-4 bg-bus-blue/10 border-bus-blue/30 shadow-soft">
-                <div className="flex gap-3 items-start">
-                  <div className="p-2 bg-bus-blue rounded-full text-white">
-                    <Info size={18} />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Atualizações recentes</h3>
-                    <p className="text-sm text-muted-foreground">As informações abaixo são baseadas em contribuições de usuários</p>
-                  </div>
-                </div>
-              </Card>
-              
-              {filteredRoutes.length === 0 ? (
-                <div className="text-center py-10">
-                  <p className="text-muted-foreground">Nenhuma linha encontrada. Tente outra busca.</p>
-                </div>
-              ) : (
-                filteredRoutes.map((route, idx) => (
-                  <motion.div 
+      <main className="flex-1 relative">
+        {showRouteSelector && (
+          <div className="absolute top-0 right-0 left-0 z-10 bg-background p-4 shadow-md">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-lg font-medium mb-3">Selecione uma linha para filtrar</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                {busRoutes.map(route => (
+                  <Button
                     key={route.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
+                    variant={selectedRoute === route.id ? "default" : "outline"}
+                    className="justify-start overflow-hidden"
+                    onClick={() => {
+                      setSelectedRoute(selectedRoute === route.id ? null : route.id);
+                      if (selectedRoute !== route.id) {
+                        setShowRouteSelector(false);
+                      }
+                    }}
                   >
-                    <Card 
-                      className={`card-route border-l-4 bg-white`}
-                      style={{ borderLeftColor: route.color }}
-                      onClick={() => setSelectedRoute(route.id)}
+                    <div 
+                      className="w-6 h-6 rounded-full mr-2 flex items-center justify-center text-white text-xs font-medium"
+                      style={{ backgroundColor: route.color }}
                     >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className={`text-white text-sm font-medium px-2 py-1 rounded-md`} style={{ backgroundColor: route.color }}>
-                              {route.number}
-                            </span>
-                            <h3 className="font-semibold text-lg">{route.name}</h3>
-                          </div>
-                          <p className="text-muted-foreground">{route.description}</p>
-                        </div>
-                        
-                        {recentUpdates.find(update => update.routeId === route.id) && (
-                          <div className="bg-bus-green/10 text-bus-green text-sm font-medium px-3 py-1 rounded-full">
-                            Atualizado
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="mt-3 pt-3 border-t text-sm text-muted-foreground">
-                        <div className="flex justify-between">
-                          <span>Próximo horário: {route.nextScheduledTime}</span>
-                          <span>Frequência: {route.frequency}</span>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))
-              )}
-            </motion.div>
-          )}
-          
-          {view === 'map' && (
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              {filteredRoutes.slice(0, 3).map((route) => (
-                <button
-                  key={route.id}
-                  className={`p-3 rounded-lg flex items-center gap-2 border transition-all ${
-                    selectedRoute === route.id ? 'bg-accent border-primary' : 'bg-card hover:bg-accent/50'
-                  }`}
-                  onClick={() => setSelectedRoute(route.id)}
-                >
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: route.color }}
-                  ></div>
-                  <span className="font-medium">{route.number}</span>
-                  <span className="truncate">{route.name}</span>
-                </button>
-              ))}
+                      {route.number}
+                    </div>
+                    <span className="truncate">{route.name.split('-')[1] || route.name}</span>
+                  </Button>
+                ))}
+                {selectedRoute && (
+                  <Button
+                    variant="ghost"
+                    className="justify-start"
+                    onClick={() => setSelectedRoute(null)}
+                  >
+                    Mostrar todos
+                  </Button>
+                )}
+              </div>
             </div>
-          )}
+          </div>
+        )}
+
+        <div className="h-[calc(100vh-64px)]">
+          <BusMap selectedRoute={selectedRoute} setSelectedRoute={setSelectedRoute} />
         </div>
       </main>
+
+      <div className="fixed bottom-5 left-0 right-0 px-4 flex justify-center">
+        <Card className="p-3 shadow-lg bg-white/90 backdrop-blur-sm max-w-xs w-full">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Bus size={20} className="text-primary mr-2" />
+              <span className="font-medium">{selectedRoute ? busRoutes.find(r => r.id === selectedRoute)?.name : 'Todas as linhas'}</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              asChild
+              className="text-xs"
+            >
+              <Link to="/contribuir">
+                <MapPin size={14} className="mr-1" />
+                Contribuir
+              </Link>
+            </Button>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };

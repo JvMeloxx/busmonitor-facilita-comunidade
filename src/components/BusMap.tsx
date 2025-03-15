@@ -104,21 +104,21 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             return (
               <div 
                 key={index}
-                className="absolute bus-marker z-10 transform -translate-x-1/2 -translate-y-1/2"
+                className="absolute z-10 transform -translate-x-1/2 -translate-y-1/2"
                 style={{ top: update.coordinates.y, left: update.coordinates.x }}
               >
                 <div 
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-medium relative"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-md relative"
                   style={{ backgroundColor: route.color }}
                 >
                   <span>{route.number}</span>
                   {update.hasIssue && (
-                    <div className="absolute -top-1 -right-1 bg-bus-red text-white rounded-full w-5 h-5 flex items-center justify-center shadow-soft">
+                    <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
                       <AlertTriangle size={10} />
                     </div>
                   )}
                 </div>
-                <div className="mt-1 px-2 py-1 bg-white rounded-md shadow-soft text-xs font-medium whitespace-nowrap">
+                <div className="mt-1 px-2 py-1 bg-white rounded-md shadow-sm text-xs font-medium whitespace-nowrap">
                   {update.time}
                 </div>
               </div>
@@ -129,7 +129,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       
       {/* Disclaimer message */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-        <div className="bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs text-muted-foreground shadow-soft flex items-center">
+        <div className="bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs text-muted-foreground shadow-sm flex items-center">
           <MapPin size={12} className="mr-1" />
           <span>As localizações são aproximadas e baseadas em contribuições</span>
         </div>
