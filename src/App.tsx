@@ -4,13 +4,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
 import ContributePage from "./pages/ContributePage";
 import FavoritesPage from "./pages/FavoritesPage";
-import MapPage from "./pages/MapPage";
 import RouteDetailPage from "./pages/RouteDetailPage";
 import NotFound from "./pages/NotFound";
+import SettingsPage from "./pages/SettingsPage";
+import AboutPage from "./pages/AboutPage";
 
 const queryClient = new QueryClient();
 
@@ -21,12 +22,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<MapPage />} />
           <Route path="/rotas" element={<RoutesPage />} />
           <Route path="/rotas/:id" element={<RouteDetailPage />} />
           <Route path="/contribuir" element={<ContributePage />} />
           <Route path="/favoritos" element={<FavoritesPage />} />
-          <Route path="/mapa" element={<MapPage />} />
+          <Route path="/configuracoes" element={<SettingsPage />} />
+          <Route path="/sobre" element={<AboutPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
