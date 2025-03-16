@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
 import ContributePage from "./pages/ContributePage";
@@ -12,29 +13,60 @@ import RouteDetailPage from "./pages/RouteDetailPage";
 import NotFound from "./pages/NotFound";
 import SettingsPage from "./pages/SettingsPage";
 import AboutPage from "./pages/AboutPage";
+import AdPopup from "./components/AdPopup";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MapPage />} />
-          <Route path="/map" element={<Navigate to="/" replace />} />
-          <Route path="/rotas" element={<RoutesPage />} />
-          <Route path="/rotas/:id" element={<RouteDetailPage />} />
-          <Route path="/contribuir" element={<ContributePage />} />
-          <Route path="/favoritos" element={<FavoritesPage />} />
-          <Route path="/configuracoes" element={<SettingsPage />} />
-          <Route path="/sobre" element={<AboutPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [showAd, setShowAd] = useState(false);
+
+  useEffect(() => {
+    // Show ad when the app loads
+    setShowAd(true);
+    
+    // Store current timestamp in localStorage when app is opened
+    const lastOpenTimestamp = localStorage.getItem('lastOpenTimestamp');
+    const currentTime = new Date().getTime();
+    
+    // Set the current time as the last open timestamp
+    localStorage.setItem('lastOpenTimestamp', currentTime.toString());
+    
+    // If there's a previous timestamp and it's been more than 10 minutes (600000ms)
+    // this helps to not show the ad if the user just refreshes the page
+    if (lastOpenTimestamp) {
+      const timeDifference = currentTime - parseInt(lastOpenTimestamp);
+      if (timeDifference < 600000) {
+        setShowAd(false);
+      }
+    }
+  }, []);
+
+  const handleCloseAd = () => {
+    setShowAd(false);
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AdPopup open={showAd} onClose={handleCloseAd} />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MapPage />} />
+            <Route path="/map" element={<Navigate to="/" replace />} />
+            <Route path="/rotas" element={<RoutesPage />} />
+            <Route path="/rotas/:id" element={<RouteDetailPage />} />
+            <Route path="/contribuir" element={<ContributePage />} />
+            <Route path="/favoritos" element={<FavoritesPage />} />
+            <Route path="/configuracoes" element={<SettingsPage />} />
+            <Route path="/sobre" element={<AboutPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
