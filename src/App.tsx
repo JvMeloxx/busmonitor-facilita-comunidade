@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
 import ContributePage from "./pages/ContributePage";
@@ -23,6 +23,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MapPage />} />
+          <Route path="/map" element={<Navigate to="/" replace />} />
           <Route path="/rotas" element={<RoutesPage />} />
           <Route path="/rotas/:id" element={<RouteDetailPage />} />
           <Route path="/contribuir" element={<ContributePage />} />
