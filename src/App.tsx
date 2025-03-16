@@ -14,15 +14,22 @@ import NotFound from "./pages/NotFound";
 import SettingsPage from "./pages/SettingsPage";
 import AboutPage from "./pages/AboutPage";
 import AdPopup from "./components/AdPopup";
+import { getRandomAd, initAdSystem, shouldShowAds } from "./utils/adManager";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [showAd, setShowAd] = useState(false);
+  const [currentAd, setCurrentAd] = useState(getRandomAd());
 
   useEffect(() => {
-    // Show ad when the app loads
-    setShowAd(true);
+    // Initialize the ad system
+    initAdSystem();
+    
+    // Check if we should show ads
+    if (!shouldShowAds()) {
+      return;
+    }
     
     // Store current timestamp in localStorage when app is opened
     const lastOpenTimestamp = localStorage.getItem('lastOpenTimestamp');
@@ -37,7 +44,15 @@ const App = () => {
       const timeDifference = currentTime - parseInt(lastOpenTimestamp);
       if (timeDifference < 600000) {
         setShowAd(false);
+        return;
       }
+    }
+    
+    // Get a random ad and show it
+    const ad = getRandomAd();
+    if (ad) {
+      setCurrentAd(ad);
+      setShowAd(true);
     }
   }, []);
 
@@ -50,7 +65,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <AdPopup open={showAd} onClose={handleCloseAd} />
+        <AdPopup open={showAd} onClose={handleCloseAd} advertisement={currentAd} />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MapPage />} />
