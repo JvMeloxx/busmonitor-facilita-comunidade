@@ -1,28 +1,72 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
+import { GoogleMap, LoadScript, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 
 interface RouteMapProps {
   routeId: string;
   routeColor: string;
 }
 
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+  borderRadius: '0.75rem',
+};
+
+// Center of the map - this should be the center of your city
+const center = {
+  lat: -23.550520, // Default latitude - change to your city's coordinates
+  lng: -46.633308, // Default longitude - change to your city's coordinates
+};
+
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
+  
   const route = busRoutes.find(r => r.id === routeId);
   const updates = recentUpdates.filter(update => update.routeId === routeId);
   
-  useEffect(() => {
-    // Simulate map loading
-    const timer = setTimeout(() => {
-      setMapLoaded(true);
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
   if (!route) return null;
+
+  // Convert SVG path to Google Maps polyline coordinates
+  const getPolylineCoordinates = (svgPath: string) => {
+    // This is a simplified conversion from SVG path to coordinates
+    // In a real app, you would use actual GPS coordinates
+    const coordinates = [];
+    const commands = svgPath.match(/[MLC][^MLC]*/g) || [];
+    
+    // Process each command in the SVG path
+    let x = 0, y = 0;
+    for (const cmd of commands) {
+      const type = cmd[0];
+      const points = cmd.slice(1).trim().split(/\s+/).map(Number);
+      
+      if (type === 'M') {
+        // Move to command
+        x = points[0];
+        y = points[1];
+        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+      } else if (type === 'L') {
+        // Line to command
+        x = points[0];
+        y = points[1];
+        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+      } else if (type === 'C') {
+        // Cubic bezier - we'll simplify by just using the endpoint
+        x = points[4];
+        y = points[5];
+        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+      }
+    }
+    
+    return coordinates;
+  };
+
+  const handleMapLoad = () => {
+    setMapLoaded(true);
+  };
 
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
@@ -35,78 +79,106 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
         </div>
       )}
       
-      {/* This would be replaced with an actual map in a real app */}
-      <div className="w-full h-full bg-[#f2f6fa] relative">
-        {/* Simplified city map representation */}
-        <div className="absolute inset-0 p-6">
-          {/* Central area */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-24 bg-gray-200 rounded-lg border-2 border-gray-300 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">Centro</span>
-          </div>
-          
-          {/* Main roads */}
-          <div className="absolute top-1/2 left-0 right-0 h-3 bg-gray-300"></div>
-          <div className="absolute bottom-0 top-0 left-1/2 w-3 bg-gray-300 transform -translate-x-1/2"></div>
-          
-          {/* Neighborhoods */}
-          <div className="absolute top-[20%] left-[20%] w-24 h-20 bg-gray-200 rounded-lg border border-gray-300 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-600">Jardim Ingá</span>
-          </div>
-          <div className="absolute top-[20%] right-[20%] w-24 h-20 bg-gray-200 rounded-lg border border-gray-300 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-600">Setor Leste</span>
-          </div>
-          <div className="absolute bottom-[20%] left-[20%] w-24 h-20 bg-gray-200 rounded-lg border border-gray-300 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-600">Parque Sol</span>
-          </div>
-          <div className="absolute bottom-[20%] right-[20%] w-24 h-20 bg-gray-200 rounded-lg border border-gray-300 flex items-center justify-center">
-            <span className="text-xs font-medium text-gray-600">Santa Luzia</span>
-          </div>
-          
+      <LoadScript googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc">
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={14}
+          onLoad={handleMapLoad}
+          options={{
+            streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+            styles: [
+              {
+                featureType: "transit",
+                elementType: "labels.icon",
+                stylers: [{ visibility: "on" }],
+              },
+            ],
+          }}
+        >
           {/* Bus route */}
-          <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
-            <path 
-              d={route.pathCoordinates}
-              stroke={routeColor}
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          </svg>
+          <Polyline
+            path={getPolylineCoordinates(route.pathCoordinates)}
+            options={{
+              strokeColor: routeColor,
+              strokeOpacity: 1,
+              strokeWeight: 6,
+            }}
+          />
           
           {/* Bus stops */}
-          {route.stops.map((stop, index) => (
-            <div 
-              key={index}
-              className="absolute z-10 transform -translate-x-1/2 -translate-y-1/2"
-              style={{ top: stop.coordinates.y, left: stop.coordinates.x }}
-            >
-              <div className="w-8 h-8 rounded-full bg-white border-2 flex items-center justify-center shadow-md" style={{ borderColor: routeColor }}>
-                <span className="text-xs font-bold">{index + 1}</span>
-              </div>
-            </div>
-          ))}
+          {route.stops.map((stop, index) => {
+            // Convert pixel coordinates to lat/lng
+            const position = {
+              lat: center.lat + (stop.coordinates.y - 300) / 10000,
+              lng: center.lng + (stop.coordinates.x - 400) / 10000,
+            };
+            
+            return (
+              <Marker
+                key={`stop-${index}`}
+                position={position}
+                onClick={() => setActiveStopIndex(index)}
+                icon={{
+                  path: google.maps.SymbolPath.CIRCLE,
+                  fillColor: '#ffffff',
+                  fillOpacity: 1,
+                  scale: 8,
+                  strokeColor: routeColor,
+                  strokeWeight: 2,
+                }}
+                label={{
+                  text: (index + 1).toString(),
+                  color: '#000000',
+                  fontSize: '10px',
+                }}
+              >
+                {activeStopIndex === index && (
+                  <InfoWindow onCloseClick={() => setActiveStopIndex(null)}>
+                    <div className="p-2">
+                      <p className="font-medium">{stop.name}</p>
+                      <p className="text-sm">{stop.address}</p>
+                    </div>
+                  </InfoWindow>
+                )}
+              </Marker>
+            );
+          })}
           
           {/* Bus markers */}
-          {updates.map((update, index) => (
-            <div 
-              key={index}
-              className="absolute z-20 transform -translate-x-1/2 -translate-y-1/2"
-              style={{ top: update.coordinates.y, left: update.coordinates.x }}
-            >
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-md"
-                style={{ backgroundColor: routeColor }}
-              >
-                <span>{route.number}</span>
-              </div>
-              <div className="mt-1 px-2 py-1 bg-white rounded-md shadow-sm text-xs font-medium whitespace-nowrap">
-                {update.time}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+          {updates.map((update, index) => {
+            // Convert pixel coordinates to lat/lng
+            const position = {
+              lat: center.lat + (update.coordinates.y - 300) / 10000,
+              lng: center.lng + (update.coordinates.x - 400) / 10000,
+            };
+            
+            return (
+              <Marker
+                key={`bus-${index}`}
+                position={position}
+                icon={{
+                  path: 'M -10,-10 L 10,-10 L 10,10 L -10,10 z',
+                  fillColor: routeColor,
+                  fillOpacity: 1,
+                  scale: 1.5,
+                  strokeColor: 'white',
+                  strokeWeight: 2,
+                  labelOrigin: { x: 0, y: 0 },
+                }}
+                label={{
+                  text: route.number.toString(),
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                }}
+              />
+            );
+          })}
+        </GoogleMap>
+      </LoadScript>
       
       {/* Legend */}
       <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
