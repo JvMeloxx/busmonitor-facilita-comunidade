@@ -114,20 +114,44 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             if (selectedRoute && route.id !== selectedRoute) return null;
             
             const coordinates = getPolylineCoordinates(route.pathCoordinates);
+            const isDashed = selectedRoute !== route.id;
             
-            return (
-              <Polyline
-                key={route.id}
-                path={coordinates}
-                options={{
-                  strokeColor: route.color,
-                  strokeOpacity: selectedRoute === route.id ? 1 : 0.6,
-                  strokeWeight: 6,
-                  strokeDasharray: selectedRoute === route.id ? [] : [8, 8], // Fixed property name
-                }}
-                onClick={() => setSelectedRoute(route.id)}
-              />
-            );
+            // For dashed lines, we need to create multiple small line segments
+            if (isDashed) {
+              // Create segments to simulate a dashed line
+              const segments = [];
+              for (let i = 0; i < coordinates.length - 1; i++) {
+                if (i % 2 === 0) { // Only show every other segment to create dashed effect
+                  segments.push(
+                    <Polyline
+                      key={`${route.id}-segment-${i}`}
+                      path={[coordinates[i], coordinates[i + 1]]}
+                      options={{
+                        strokeColor: route.color,
+                        strokeOpacity: 0.6,
+                        strokeWeight: 6
+                      }}
+                      onClick={() => setSelectedRoute(route.id)}
+                    />
+                  );
+                }
+              }
+              return segments;
+            } else {
+              // Solid line for selected route
+              return (
+                <Polyline
+                  key={route.id}
+                  path={coordinates}
+                  options={{
+                    strokeColor: route.color,
+                    strokeOpacity: 1,
+                    strokeWeight: 6
+                  }}
+                  onClick={() => setSelectedRoute(route.id)}
+                />
+              );
+            }
           })}
           
           {/* Bus markers */}
