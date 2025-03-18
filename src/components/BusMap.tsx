@@ -16,10 +16,10 @@ const mapContainerStyle = {
   borderRadius: '0.75rem',
 };
 
-// Center of the map - this should be the center of your city
+// Center of the map - Luziânia, Goiás, Brazil
 const center = {
-  lat: -23.550520, // Default latitude - change to your city's coordinates
-  lng: -46.633308, // Default longitude - change to your city's coordinates
+  lat: -16.2514467,
+  lng: -47.9282398,
 };
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
@@ -54,17 +54,17 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         // Move to command
         x = points[0];
         y = points[1];
-        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
       } else if (type === 'L') {
         // Line to command
         x = points[0];
         y = points[1];
-        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
       } else if (type === 'C') {
         // Cubic bezier - we'll simplify by just using the endpoint
         x = points[4];
         y = points[5];
-        coordinates.push({ lat: center.lat + (y - 300) / 10000, lng: center.lng + (x - 400) / 10000 });
+        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
       }
     }
     
@@ -94,7 +94,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
-          zoom={14}
+          zoom={13}
           onLoad={handleMapLoad}
           options={{
             streetViewControl: false,
@@ -123,7 +123,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
                   strokeColor: route.color,
                   strokeOpacity: selectedRoute === route.id ? 1 : 0.6,
                   strokeWeight: 6,
-                  strokeDashArray: selectedRoute === route.id ? [] : [8, 8],
+                  strokeDasharray: selectedRoute === route.id ? [] : [8, 8], // Fixed property name
                 }}
                 onClick={() => setSelectedRoute(route.id)}
               />
@@ -137,8 +137,8 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             
             // Convert pixel coordinates to lat/lng
             const position = {
-              lat: center.lat + (update.coordinates.y - 300) / 10000,
-              lng: center.lng + (update.coordinates.x - 400) / 10000,
+              lat: center.lat + (Number(update.coordinates.y) - 300) / 30000, // Fixed: explicit number conversion
+              lng: center.lng + (Number(update.coordinates.x) - 400) / 30000, // Fixed: explicit number conversion
             };
             
             const markerId = `${update.routeId}-${index}`;
@@ -155,7 +155,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
                   scale: 1.5,
                   strokeColor: 'white',
                   strokeWeight: 2,
-                  labelOrigin: { x: 0, y: 0 },
                 }}
                 label={{
                   text: route.number.toString(),
