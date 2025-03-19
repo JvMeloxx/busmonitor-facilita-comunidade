@@ -21,6 +21,23 @@ const center = {
   lng: -47.9282398, 
 };
 
+// Map style to remove POIs
+const mapStyles = [
+  {
+    featureType: "poi",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.icon",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "transit.station.bus",
+    stylers: [{ visibility: "on" }]
+  }
+];
+
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
@@ -89,13 +106,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
             streetViewControl: false,
             mapTypeControl: false,
             fullscreenControl: false,
-            styles: [
-              {
-                featureType: "transit",
-                elementType: "labels.icon",
-                stylers: [{ visibility: "on" }],
-              },
-            ],
+            styles: mapStyles,
           }}
         >
           {/* Bus route */}
