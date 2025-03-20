@@ -1,4 +1,3 @@
-
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
@@ -20,6 +19,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Nunito", ...fontFamily.sans],
+        display: ["Poppins", ...fontFamily.sans],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -59,9 +62,6 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       keyframes: {
         slideDownAndFade: {
@@ -122,7 +122,6 @@ export default {
         'soft': '0 2px 8px rgba(0, 0, 0, 0.05)',
       },
       fontSize: {
-        // Custom text size for responsive typography
         '2xl-plus': 'clamp(1.5rem, 5vw, 1.75rem)',
         '3xl-plus': 'clamp(1.875rem, 5vw, 2.25rem)',
       },
