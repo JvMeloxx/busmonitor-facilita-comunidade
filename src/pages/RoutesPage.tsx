@@ -1,23 +1,43 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Search, Clock, MapPin, ChevronRight, Star } from 'lucide-react';
+import { ArrowLeft, Search, Clock, MapPin, ChevronRight, Star, Bus, Filter } from 'lucide-react';
 import { busRoutes } from '../data/busData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from 'sonner';
 
 const RoutesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [dayFilter, setDayFilter] = useState<'mondayToFriday' | 'saturdayAndHoliday' | 'sunday'>('mondayToFriday');
 
   // Filter routes based on search term
   const filteredRoutes = busRoutes.filter(route => 
     route.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    route.number.toString().includes(searchTerm)
+    route.number.includes(searchTerm)
   );
+
+  // Effect to update next scheduled times periodically
+  useEffect(() => {
+    // Update time every minute
+    const interval = setInterval(() => {
+      // This function would typically call an API or recalculate times
+      // For demo purposes, we're just showing a toast
+      console.log("Updated next departure times");
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleFavorite = (routeId: string) => {
     if (favorites.includes(routeId)) {
@@ -27,6 +47,21 @@ const RoutesPage = () => {
       setFavorites([...favorites, routeId]);
       toast.success('Adicionado aos favoritos');
     }
+  };
+
+  // Helper to get all times for a specific day and period
+  const getScheduleTimes = (route: typeof busRoutes[0], day: 'mondayToFriday' | 'saturdayAndHoliday' | 'sunday') => {
+    const schedule = route.schedule[day];
+    return {
+      morning: schedule.morning,
+      afternoon: schedule.afternoon,
+      evening: schedule.evening
+    };
+  };
+
+  // Helper to get the next time for display
+  const getNextTime = (route: typeof busRoutes[0]) => {
+    return route.nextScheduledTime || 'Não disponível';
   };
 
   return (
@@ -75,7 +110,7 @@ const RoutesPage = () => {
                   <p className="text-muted-foreground">Nenhuma linha encontrada. Tente outra busca.</p>
                 </div>
               ) : (
-                filteredRoutes.map((route, idx) => (
+                filteredRoutes.map((route) => (
                   <div key={route.id}>
                     <Link to={`/rotas/${route.id}`}>
                       <Card className="p-4 border-l-4 bg-white hover:shadow-md transition-shadow" style={{ borderLeftColor: route.color }}>
@@ -92,11 +127,11 @@ const RoutesPage = () => {
                             <div className="flex flex-wrap gap-4 mt-3">
                               <div className="flex items-center text-sm text-muted-foreground">
                                 <Clock size={16} className="mr-1" />
-                                <span>Frequência: {route.frequency}</span>
+                                <span>Próximo: {getNextTime(route)}</span>
                               </div>
                               <div className="flex items-center text-sm text-muted-foreground">
                                 <MapPin size={16} className="mr-1" />
-                                <span>{route.stops.length} paradas</span>
+                                <span>{route.terminal.name}</span>
                               </div>
                             </div>
                           </div>
@@ -127,7 +162,23 @@ const RoutesPage = () => {
             </TabsContent>
 
             <TabsContent value="schedule" className="space-y-6">
-              {busRoutes.map((route, idx) => (
+              <div className="mb-4">
+                <Select 
+                  defaultValue="mondayToFriday"
+                  onValueChange={(value) => setDayFilter(value as any)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecione o dia" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mondayToFriday">Segunda a Sexta</SelectItem>
+                    <SelectItem value="saturdayAndHoliday">Sábado e Feriado</SelectItem>
+                    <SelectItem value="sunday">Domingo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {busRoutes.map((route) => (
                 <div key={route.id}>
                   <Card className="p-4">
                     <div className="flex items-center gap-2 mb-3">
@@ -139,23 +190,73 @@ const RoutesPage = () => {
                       </div>
                       <div>
                         <h3 className="font-semibold">{route.name}</h3>
-                        <p className="text-sm text-muted-foreground">Hoje • {new Date().toLocaleDateString('pt-BR')}</p>
+                        <p className="text-sm text-muted-foreground">{route.terminal.name}</p>
                       </div>
                     </div>
                     
                     <div className="border-t pt-3">
-                      <h4 className="font-medium mb-2 text-sm">Horários de saída:</h4>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                        {route.scheduleTimes.map((time, index) => (
-                          <div 
-                            key={index} 
-                            className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
-                          >
-                            <Clock size={14} className="mr-1 text-muted-foreground" />
-                            {time}
+                      {/* Morning schedule */}
+                      {getScheduleTimes(route, dayFilter).morning.length > 0 && (
+                        <div className="mb-4">
+                          <h4 className="font-medium mb-2 text-sm">Manhã:</h4>
+                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                            {getScheduleTimes(route, dayFilter).morning.map((time, index) => (
+                              <div 
+                                key={index} 
+                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                              >
+                                <Clock size={14} className="mr-1 text-muted-foreground" />
+                                {time}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      )}
+                      
+                      {/* Afternoon schedule */}
+                      {getScheduleTimes(route, dayFilter).afternoon.length > 0 && (
+                        <div className="mb-4">
+                          <h4 className="font-medium mb-2 text-sm">Tarde:</h4>
+                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                            {getScheduleTimes(route, dayFilter).afternoon.map((time, index) => (
+                              <div 
+                                key={index} 
+                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                              >
+                                <Clock size={14} className="mr-1 text-muted-foreground" />
+                                {time}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Evening schedule */}
+                      {getScheduleTimes(route, dayFilter).evening.length > 0 && (
+                        <div>
+                          <h4 className="font-medium mb-2 text-sm">Noite:</h4>
+                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                            {getScheduleTimes(route, dayFilter).evening.map((time, index) => (
+                              <div 
+                                key={index} 
+                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                              >
+                                <Clock size={14} className="mr-1 text-muted-foreground" />
+                                {time}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* No schedules for this day */}
+                      {getScheduleTimes(route, dayFilter).morning.length === 0 && 
+                       getScheduleTimes(route, dayFilter).afternoon.length === 0 && 
+                       getScheduleTimes(route, dayFilter).evening.length === 0 && (
+                        <div className="text-center py-4 text-muted-foreground">
+                          Não há horários disponíveis para este dia
+                        </div>
+                      )}
                     </div>
                   </Card>
                 </div>
