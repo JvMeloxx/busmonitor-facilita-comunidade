@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { MapPin, AlertTriangle } from 'lucide-react';
+import { MapPin, AlertTriangle, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
 import { toast } from 'sonner';
 import { GoogleMap, LoadScript, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
@@ -8,6 +8,16 @@ import { GoogleMap, LoadScript, Polyline, Marker, InfoWindow } from '@react-goog
 interface BusMapProps {
   selectedRoute: string | null;
   setSelectedRoute: (id: string | null) => void;
+}
+
+interface BusStop {
+  id: string;
+  name: string;
+  address: string;
+  position: {
+    lat: number;
+    lng: number;
+  };
 }
 
 const mapContainerStyle = {
@@ -42,12 +52,63 @@ const mapStyles = [
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [busStops, setBusStops] = useState<BusStop[]>([]);
+  const [showBusStops, setShowBusStops] = useState(true);
   
   useEffect(() => {
     if (selectedRoute) {
       toast.info(`Mostrando rota ${busRoutes.find(r => r.id === selectedRoute)?.name}`);
     }
   }, [selectedRoute]);
+
+  useEffect(() => {
+    if (map && showBusStops) {
+      fetchBusStops();
+    }
+  }, [map, showBusStops]);
+
+  const fetchBusStops = () => {
+    if (!map || !window.google || !window.google.maps) {
+      console.error("Google Maps API not loaded");
+      return;
+    }
+
+    // Clear existing bus stops
+    setBusStops([]);
+
+    const service = new window.google.maps.places.PlacesService(map);
+    
+    // Define the search request
+    const request = {
+      location: center,
+      radius: 5000, // 5km radius
+      type: 'bus_station' // Looking for bus stations/stops
+    };
+
+    // Perform the search
+    service.nearbySearch(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+        console.log("Found bus stops:", results);
+        
+        const newBusStops: BusStop[] = results.map((place, index) => ({
+          id: place.place_id || `stop-${index}`,
+          name: place.name || 'Ponto de ônibus',
+          address: place.vicinity || 'Luziânia - GO',
+          position: {
+            lat: place.geometry?.location?.lat() || center.lat,
+            lng: place.geometry?.location?.lng() || center.lng
+          }
+        }));
+        
+        setBusStops(newBusStops);
+        toast.success(`${newBusStops.length} pontos de ônibus encontrados`);
+      } else {
+        console.error("Error fetching bus stops:", status);
+        toast.error("Erro ao buscar pontos de ônibus");
+      }
+    });
+  };
 
   // Filter updates to show only selected route or all if none selected
   const filteredUpdates = selectedRoute 
@@ -88,8 +149,9 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     return coordinates;
   };
 
-  const handleMapLoad = () => {
+  const handleMapLoad = (mapInstance: google.maps.Map) => {
     setMapLoaded(true);
+    setMap(mapInstance);
   };
 
   const handleMarkerClick = (markerId: string) => {
@@ -107,7 +169,10 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         </div>
       )}
       
-      <LoadScript googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc">
+      <LoadScript 
+        googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"
+        libraries={["places"]}
+      >
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
           center={center}
@@ -172,8 +237,8 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             
             // Convert pixel coordinates to lat/lng
             const position = {
-              lat: center.lat + (Number(update.coordinates.y) - 300) / 30000, // Fixed: explicit number conversion
-              lng: center.lng + (Number(update.coordinates.x) - 400) / 30000, // Fixed: explicit number conversion
+              lat: center.lat + (Number(update.coordinates.y) - 300) / 30000,
+              lng: center.lng + (Number(update.coordinates.x) - 400) / 30000,
             };
             
             const markerId = `${update.routeId}-${index}`;
@@ -215,8 +280,53 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
               </Marker>
             );
           })}
+
+          {/* Bus Stops from Google Places API */}
+          {showBusStops && busStops.map(stop => (
+            <Marker
+              key={stop.id}
+              position={stop.position}
+              onClick={() => handleMarkerClick(stop.id)}
+              icon={{
+                path: 'M 0,0 m -2,-2 v 4 h 4 v -4 z',
+                fillColor: '#4171E1',
+                fillOpacity: 0.8,
+                scale: 2,
+                strokeColor: 'white',
+                strokeWeight: 1,
+              }}
+            >
+              {activeMarker === stop.id && (
+                <InfoWindow onCloseClick={() => setActiveMarker(null)}>
+                  <div className="p-2">
+                    <p className="font-medium">{stop.name}</p>
+                    <p className="text-sm">{stop.address}</p>
+                    <div className="flex items-center mt-2 text-xs text-blue-600">
+                      <BusFront size={14} className="mr-1" />
+                      Ponto de ônibus
+                    </div>
+                  </div>
+                </InfoWindow>
+              )}
+            </Marker>
+          ))}
         </GoogleMap>
       </LoadScript>
+      
+      {/* Toggle for bus stops */}
+      <div className="absolute top-4 right-4 z-10">
+        <button 
+          onClick={() => setShowBusStops(!showBusStops)} 
+          className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
+            showBusStops 
+              ? 'bg-primary text-white' 
+              : 'bg-white text-gray-700'
+          }`}
+        >
+          <BusFront size={16} className="mr-2" />
+          {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
+        </button>
+      </div>
       
       {/* Disclaimer message */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
