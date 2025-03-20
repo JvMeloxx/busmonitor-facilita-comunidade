@@ -67,6 +67,27 @@ const MapPage = () => {
     ? busRoutes.find(route => route.id === selectedRoute) 
     : null;
 
+  // Helper function to get all schedule times for display
+  const getAllScheduleTimes = (route: typeof busRoutes[0]) => {
+    if (!route) return [];
+    
+    // Combine all times from all periods and days into a single array
+    const allTimes = [
+      ...route.schedule.mondayToFriday.morning,
+      ...route.schedule.mondayToFriday.afternoon,
+      ...route.schedule.mondayToFriday.evening,
+      ...route.schedule.saturdayAndHoliday.morning,
+      ...route.schedule.saturdayAndHoliday.afternoon,
+      ...route.schedule.saturdayAndHoliday.evening,
+      ...route.schedule.sunday.morning,
+      ...route.schedule.sunday.afternoon,
+      ...route.schedule.sunday.evening
+    ];
+    
+    // Remove duplicates
+    return [...new Set(allTimes)].sort();
+  };
+
   return (
     <div className="min-h-screen relative flex flex-col bg-background">
       {/* App Bar */}
@@ -183,7 +204,7 @@ const MapPage = () => {
               <div className="mb-4">
                 <h3 className="text-sm font-medium mb-2">Próximos Horários</h3>
                 <div className="grid grid-cols-3 gap-2">
-                  {selectedRouteData.scheduleTimes.slice(0, 6).map((time, idx) => (
+                  {getAllScheduleTimes(selectedRouteData).slice(0, 6).map((time, idx) => (
                     <div key={idx} className="bg-accent rounded-md p-2 text-center text-sm">
                       {time}
                     </div>
