@@ -26,6 +26,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [showBusStops, setShowBusStops] = useState(true);
+  const [showRoutes, setShowRoutes] = useState(false); // Added state to control route visibility
   
   // Get theme information
   const { companyColor, companyLightColor } = useTheme();
@@ -81,7 +82,8 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             styles: mapStyles,
           }}
         >
-          {busRoutes.map(route => {
+          {/* Route polylines are conditionally rendered based on showRoutes state */}
+          {showRoutes && busRoutes.map(route => {
             if (selectedRoute && route.id !== selectedRoute) return null;
             return (
               <RoutePolyline
