@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, LoadScriptProps } from '@react-google-maps/api';
 import { toast } from 'sonner';
 import { busRoutes, recentUpdates } from '../data/busData';
 import MapLoader from './maps/MapLoader';
@@ -42,9 +42,12 @@ const mapStyles = [
   }
 ];
 
+// Definindo o tipo de biblioteca corretamente
+type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
+
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
-  // Use memoized value of libraries to prevent unnecessary reloads of the LoadScript component
-  const libraries = useMemo(() => ["places"], []);
+  // Ajustando o useMemo para usar o tipo correto
+  const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
@@ -87,7 +90,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       <MapLoader mapLoaded={mapLoaded} />
       
       <LoadScript 
-        googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"}
         libraries={libraries}
       >
         <GoogleMap

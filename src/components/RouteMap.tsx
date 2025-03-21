@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, LoadScriptProps } from '@react-google-maps/api';
 import { toast } from 'sonner';
 import MapLoader from './maps/MapLoader';
 import RoutePolyline from './maps/RoutePolyline';
@@ -44,6 +44,9 @@ const mapStyles = [
   }
 ];
 
+// Definindo o tipo de biblioteca corretamente
+type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
+
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
@@ -51,8 +54,8 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [showBusStops, setShowBusStops] = useState(true);
   const [activePlacesStop, setActivePlacesStop] = useState<string | null>(null);
   
-  // Use memoized value of libraries to prevent unnecessary reloads of the LoadScript component
-  const libraries = useMemo(() => ["places"], []);
+  // Ajustando o useMemo para usar o tipo correto
+  const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const route = busRoutes.find(r => r.id === routeId);
   const updates = recentUpdates.filter(update => update.routeId === routeId);
@@ -124,7 +127,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
       <MapLoader mapLoaded={mapLoaded} />
       
       <LoadScript 
-        googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"}
         libraries={libraries}
       >
         <GoogleMap
