@@ -107,13 +107,14 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             );
           })}
           
+          {/* Ensure each update marker has a unique key */}
           {filteredUpdates.map((update, index) => {
             const route = busRoutes.find(r => r.id === update.routeId);
             if (!route) return null;
             
             return (
               <BusUpdateMarker
-                key={`update-${update.routeId}-${index}`}
+                key={`update-${update.routeId}-${index}-${update.timestamp}`}
                 update={update}
                 route={route}
                 index={index}
@@ -125,9 +126,10 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             );
           })}
 
-          {showBusStops && isPlacesApiEnabled && busStops.map(stop => (
+          {/* Ensure each bus stop has a unique key */}
+          {showBusStops && isPlacesApiEnabled && busStops.map((stop, index) => (
             <BusStopMarker
-              key={stop.id}
+              key={`stop-${stop.id}-${index}`}
               stop={stop}
               activeMarker={activeMarker}
               onClick={handleMarkerClick}

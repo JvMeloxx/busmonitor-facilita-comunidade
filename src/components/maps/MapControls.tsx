@@ -20,19 +20,17 @@ export const MapControls = ({
   return (
     <>
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
-        {isPlacesApiEnabled && (
-          <button 
-            onClick={() => setShowBusStops(!showBusStops)} 
-            className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
-              showBusStops 
-                ? 'bg-primary text-white' 
-                : 'bg-white text-gray-700'
-            }`}
-          >
-            <BusFront size={16} className="mr-2" />
-            {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
-          </button>
-        )}
+        <button 
+          onClick={() => setShowBusStops(!showBusStops)} 
+          className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
+            showBusStops 
+              ? 'bg-primary text-white' 
+              : 'bg-white text-gray-700'
+          }`}
+        >
+          <BusFront size={16} className="mr-2" />
+          {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
+        </button>
         
         <button 
           onClick={() => setShowRoutes(!showRoutes)} 
@@ -52,16 +50,14 @@ export const MapControls = ({
           <div className="w-3 h-3 rounded-full mr-2 bg-blue-500"></div>
           <span className="text-xs">Rotas de ônibus</span>
         </div>
-        {isPlacesApiEnabled && (
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-600 mr-2"></div>
-            <span className="text-xs">Pontos do Google</span>
-          </div>
-        )}
+        <div className="flex items-center">
+          <div className="w-3 h-3 bg-blue-600 mr-2"></div>
+          <span className="text-xs">Pontos de ônibus</span>
+        </div>
         {!isPlacesApiEnabled && (
           <div className="flex items-center text-amber-600">
             <div className="w-3 h-3 bg-amber-500 mr-2"></div>
-            <span className="text-xs">API Places não ativada</span>
+            <span className="text-xs">Usando pontos demonstrativos</span>
           </div>
         )}
       </div>
