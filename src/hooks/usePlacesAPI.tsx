@@ -30,11 +30,14 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps) =
 
   const fetchBusStops = () => {
     if (!map || !window.google || !window.google.maps) {
-      console.error("Google Maps API not loaded");
+      console.error("Google Maps API não carregada completamente");
+      setIsPlacesApiEnabled(false);
       return;
     }
 
-    setBusStops([]);
+    console.log("Verificando status da API Places...");
+    console.log("Google Maps disponível:", !!window.google.maps);
+    console.log("Places Service disponível:", !!window.google.maps.places);
 
     try {
       const service = new window.google.maps.places.PlacesService(map);
@@ -45,10 +48,13 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps) =
         type: 'bus_station'
       };
 
+      console.log("Realizando busca de pontos de ônibus...");
+
       service.nearbySearch(request, (results, status) => {
+        console.log("Status da busca:", status);
+        console.log("Resultados encontrados:", results);
+
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          console.log("Found bus stops:", results);
-          
           const newBusStops: BusStop[] = results.map((place, index) => ({
             id: place.place_id || `stop-${index}`,
             name: place.name || 'Ponto de ônibus',
@@ -62,7 +68,7 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps) =
           setBusStops(newBusStops);
           toast.success(`${newBusStops.length} pontos de ônibus encontrados`);
         } else {
-          console.error("Error fetching bus stops:", status);
+          console.error("Erro ao buscar pontos de ônibus:", status);
           if (status === "REQUEST_DENIED") {
             setIsPlacesApiEnabled(false);
             toast.error("API Places não está ativada para esta chave. Mostrando apenas rotas oficiais.");
@@ -72,7 +78,7 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps) =
         }
       });
     } catch (error) {
-      console.error("Error with Places API:", error);
+      console.error("Erro com a API Places:", error);
       setIsPlacesApiEnabled(false);
       toast.error("Erro ao carregar a API Places. Mostrando apenas rotas oficiais.");
     }
