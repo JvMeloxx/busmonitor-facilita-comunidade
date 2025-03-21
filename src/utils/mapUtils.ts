@@ -70,9 +70,28 @@ export const mapContainerStyle = {
 };
 
 /**
- * Centro do mapa para Luziânia
+ * Coordenadas das empresas de ônibus
  */
-export const mapCenter = {
-  lat: -16.2514467, 
-  lng: -47.9282398, 
+export const companyMapCenters = {
+  tarifeZero: {
+    lat: -16.2514467, 
+    lng: -47.9282398
+  },
+  ctExpresso: {
+    lat: -16.2514467, 
+    lng: -47.9282398
+  },
+  catedral: {
+    lat: -16.14962, 
+    lng: -47.9550187
+  },
+  default: {
+    lat: -16.2514467, 
+    lng: -47.9282398
+  }
 };
+
+/**
+ * Centro do mapa para Luziânia (padrão)
+ */
+export const mapCenter = companyMapCenters.default;

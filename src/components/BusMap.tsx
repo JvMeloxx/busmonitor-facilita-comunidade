@@ -9,7 +9,7 @@ import BusUpdateMarker from './maps/BusUpdateMarker';
 import BusStopMarker from './maps/BusStopMarker';
 import MapControls from './maps/MapControls';
 import usePlacesAPI from '../hooks/usePlacesAPI';
-import { mapContainerStyle, mapCenter, mapStyles } from '../utils/mapUtils';
+import { mapContainerStyle, companyMapCenters, mapStyles } from '../utils/mapUtils';
 import { GOOGLE_MAPS_API_KEY } from '../utils/config';
 import { useTheme } from '../context/ThemeContext';
 
@@ -29,7 +29,10 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const [showRoutes, setShowRoutes] = useState(false); // Added state to control route visibility
   
   // Get theme information
-  const { companyColor, companyLightColor } = useTheme();
+  const { company, companyColor, companyLightColor } = useTheme();
+  
+  // Determine the map center based on the selected company
+  const mapCenter = company ? companyMapCenters[company] : companyMapCenters.default;
   
   // Use the custom hook for Places API
   const { busStops, isPlacesApiEnabled } = usePlacesAPI({
@@ -43,6 +46,14 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       toast.info(`Mostrando rota ${busRoutes.find(r => r.id === selectedRoute)?.name}`);
     }
   }, [selectedRoute]);
+
+  // Update map center when company changes
+  useEffect(() => {
+    if (map && company) {
+      const newCenter = companyMapCenters[company];
+      map.panTo(newCenter);
+    }
+  }, [company, map]);
 
   const handleMapLoad = (mapInstance: google.maps.Map) => {
     setMapLoaded(true);
