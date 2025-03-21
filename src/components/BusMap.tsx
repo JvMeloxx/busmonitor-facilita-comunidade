@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from 'react';
 import { MapPin, AlertTriangle, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
@@ -20,19 +19,19 @@ interface BusStop {
   };
 }
 
+type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
+
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
   borderRadius: '0.75rem',
 };
 
-// Center of the map - Luziânia, Goiás, Brazil
 const center = {
   lat: -16.2514467,
   lng: -47.9282398,
 };
 
-// Map style to remove POIs
 const mapStyles = [
   {
     featureType: "poi",
@@ -50,8 +49,7 @@ const mapStyles = [
 ];
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
-  // Memoize the libraries array to prevent reloading
-  const libraries = useMemo(() => ["places"], []);
+  const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
@@ -78,20 +76,17 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       return;
     }
 
-    // Clear existing bus stops
     setBusStops([]);
 
     try {
       const service = new window.google.maps.places.PlacesService(map);
       
-      // Define the search request
       const request = {
         location: center,
-        radius: 5000, // 5km radius
-        type: 'bus_station' // Looking for bus stations/stops
+        radius: 5000,
+        type: 'bus_station'
       };
 
-      // Perform the search
       service.nearbySearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
           console.log("Found bus stops:", results);
@@ -125,44 +120,31 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     }
   };
 
-  // Filter updates to show only selected route or all if none selected
-  const filteredUpdates = selectedRoute 
-    ? recentUpdates.filter(update => update.routeId === selectedRoute)
-    : recentUpdates;
-
-  // Convert SVG path to Google Maps polyline coordinates
   const getPolylineCoordinates = (svgPath: string) => {
     try {
-      // This is a simplified conversion from SVG path to coordinates
-      // In a real app, you would use actual GPS coordinates
       const coordinates = [];
       const commands = svgPath.match(/[MLC][^MLC]*/g) || [];
       
-      // Process each command in the SVG path
       let x = 0, y = 0;
       for (const cmd of commands) {
         const type = cmd[0];
         const points = cmd.slice(1).trim().split(/\s+/).map(Number);
         
         if (type === 'M' && !isNaN(points[0]) && !isNaN(points[1])) {
-          // Move to command
           x = points[0];
           y = points[1];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         } else if (type === 'L' && !isNaN(points[0]) && !isNaN(points[1])) {
-          // Line to command
           x = points[0];
           y = points[1];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         } else if (type === 'C' && points.length >= 6 && !isNaN(points[4]) && !isNaN(points[5])) {
-          // Cubic bezier - we'll simplify by just using the endpoint
           x = points[4];
           y = points[5];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         }
       }
       
-      // Ensure we have valid coordinates
       return coordinates.filter(coord => 
         !isNaN(coord.lat) && !isNaN(coord.lng) && 
         Math.abs(coord.lat) <= 90 && Math.abs(coord.lng) <= 180
@@ -209,7 +191,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             styles: mapStyles,
           }}
         >
-          {/* Bus routes */}
           {busRoutes.map(route => {
             if (selectedRoute && route.id !== selectedRoute) return null;
             
@@ -218,12 +199,10 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             
             const isDashed = selectedRoute !== route.id;
             
-            // For dashed lines, we need to create multiple small line segments
             if (isDashed) {
-              // Create segments to simulate a dashed line
               const segments = [];
               for (let i = 0; i < coordinates.length - 1; i++) {
-                if (i % 2 === 0) { // Only show every other segment to create dashed effect
+                if (i % 2 === 0) {
                   segments.push(
                     <Polyline
                       key={`${route.id}-segment-${i}`}
@@ -240,7 +219,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
               }
               return segments;
             } else {
-              // Solid line for selected route
               return (
                 <Polyline
                   key={route.id}
@@ -256,13 +234,11 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             }
           })}
           
-          {/* Bus markers */}
           {filteredUpdates.map((update, index) => {
             const route = busRoutes.find(r => r.id === update.routeId);
             if (!route) return null;
             
             try {
-              // Validate coordinates before creating marker
               const y = Number(update.coordinates.y);
               const x = Number(update.coordinates.x);
               
@@ -271,7 +247,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
                 return null;
               }
               
-              // Convert pixel coordinates to lat/lng
               const position = {
                 lat: center.lat + (y - 300) / 30000,
                 lng: center.lng + (x - 400) / 30000,
@@ -321,7 +296,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             }
           })}
 
-          {/* Bus Stops from Google Places API */}
           {showBusStops && isPlacesApiEnabled && busStops.map(stop => (
             <Marker
               key={stop.id}
@@ -353,7 +327,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         </GoogleMap>
       </LoadScript>
       
-      {/* Toggle for bus stops */}
       {isPlacesApiEnabled && (
         <div className="absolute top-4 right-4 z-10">
           <button 
@@ -370,7 +343,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         </div>
       )}
       
-      {/* Legend */}
       <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
         <div className="flex items-center mb-1.5">
           <div className="w-3 h-3 rounded-full mr-2 bg-blue-500"></div>
@@ -390,7 +362,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         )}
       </div>
       
-      {/* Disclaimer message */}
       <div className="absolute bottom-4 left-0 right-0 flex justify-center">
         <div className="bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs text-muted-foreground shadow-sm flex items-center">
           <MapPin size={12} className="mr-1" />

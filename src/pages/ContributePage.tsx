@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 interface BusOption {
   id: string;
-  number: number;
+  number: number; // Tipado como number
   name: string;
   color: string;
   selected: boolean;
@@ -29,7 +29,7 @@ const ContributePage = () => {
   const [busOptions, setBusOptions] = useState<BusOption[]>(
     busRoutes.map(route => ({
       id: route.id,
-      number: route.number,
+      number: Number(route.number), // Convertendo para number
       name: route.name,
       color: route.color,
       selected: false

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
@@ -20,19 +19,19 @@ interface BusStop {
   };
 }
 
+type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
+
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
   borderRadius: '0.75rem',
 };
 
-// Center of the map - Luziânia, Goiás, Brazil
 const center = {
   lat: -16.2514467, 
   lng: -47.9282398, 
 };
 
-// Map style to remove POIs
 const mapStyles = [
   {
     featureType: "poi",
@@ -49,9 +48,7 @@ const mapStyles = [
   }
 ];
 
-// Memoize the libraries array to prevent reloading
-// Using the correct type for the Libraries
-const libraries = useMemo(() => ["places"], []);
+const libraries = useMemo<Libraries>(() => ["places"], []);
 
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -79,20 +76,17 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
       return;
     }
 
-    // Clear existing bus stops
     setBusStops([]);
 
     try {
       const service = new window.google.maps.places.PlacesService(map);
       
-      // Define the search request
       const request = {
         location: center,
         radius: 5000, // 5km radius
         type: 'bus_station' // Looking for bus stations/stops
       };
 
-      // Perform the search
       service.nearbySearch(request, (results, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
           console.log("Found bus stops:", results);
@@ -110,7 +104,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
           setBusStops(newBusStops);
         } else {
           console.error("Error fetching bus stops:", status);
-          // If API not activated, disable Places features
           if (status === "REQUEST_DENIED") {
             setIsPlacesApiEnabled(false);
             toast.error("API Places não está ativada para esta chave. Mostrando apenas rotas oficiais.");
@@ -124,38 +117,31 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
     }
   };
 
-  // Convert SVG path to Google Maps polyline coordinates
   const getPolylineCoordinates = (svgPath: string) => {
     try {
-      // This is a simplified conversion from SVG path to coordinates
       const coordinates = [];
       const commands = svgPath.match(/[MLC][^MLC]*/g) || [];
       
-      // Process each command in the SVG path
       let x = 0, y = 0;
       for (const cmd of commands) {
         const type = cmd[0];
         const points = cmd.slice(1).trim().split(/\s+/).map(Number);
         
         if (type === 'M' && !isNaN(points[0]) && !isNaN(points[1])) {
-          // Move to command
           x = points[0];
           y = points[1];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         } else if (type === 'L' && !isNaN(points[0]) && !isNaN(points[1])) {
-          // Line to command
           x = points[0];
           y = points[1];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         } else if (type === 'C' && points.length >= 6 && !isNaN(points[4]) && !isNaN(points[5])) {
-          // Cubic bezier - we'll simplify by just using the endpoint
           x = points[4];
           y = points[5];
           coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
         }
       }
       
-      // Ensure we have valid coordinates
       return coordinates.filter(coord => 
         !isNaN(coord.lat) && !isNaN(coord.lng) && 
         Math.abs(coord.lat) <= 90 && Math.abs(coord.lng) <= 180
@@ -198,7 +184,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
             styles: mapStyles,
           }}
         >
-          {/* Bus route */}
           {(() => {
             const coordinates = getPolylineCoordinates(route.pathCoordinates);
             return coordinates.length > 0 ? (
@@ -213,10 +198,8 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
             ) : null;
           })()}
           
-          {/* Bus stops */}
           {route.stops.map((stop, index) => {
             try {
-              // Validate coordinates before creating marker
               const y = Number(stop.coordinates.y);
               const x = Number(stop.coordinates.x);
               
@@ -225,7 +208,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
                 return null;
               }
               
-              // Convert pixel coordinates to lat/lng
               const position = {
                 lat: center.lat + (y - 300) / 30000,
                 lng: center.lng + (x - 400) / 30000,
@@ -266,10 +248,8 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
             }
           })}
           
-          {/* Bus markers */}
           {updates.map((update, index) => {
             try {
-              // Validate coordinates before creating marker
               const y = Number(update.coordinates.y);
               const x = Number(update.coordinates.x);
               
@@ -278,7 +258,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
                 return null;
               }
               
-              // Convert pixel coordinates to lat/lng
               const position = {
                 lat: center.lat + (y - 300) / 30000,
                 lng: center.lng + (x - 400) / 30000,
@@ -310,7 +289,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
             }
           })}
 
-          {/* Bus Stops from Google Places API */}
           {showPlacesStops && isPlacesApiEnabled && busStops.map(stop => (
             <Marker
               key={stop.id}
@@ -342,7 +320,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
         </GoogleMap>
       </LoadScript>
       
-      {/* Toggle for bus stops */}
       {isPlacesApiEnabled && (
         <div className="absolute top-4 right-4 z-10">
           <button 
@@ -359,7 +336,6 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
         </div>
       )}
       
-      {/* Legend */}
       <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
         <div className="flex items-center mb-1.5">
           <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: routeColor }}></div>
