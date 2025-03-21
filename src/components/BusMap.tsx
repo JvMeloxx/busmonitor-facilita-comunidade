@@ -11,6 +11,7 @@ import MapControls from './maps/MapControls';
 import usePlacesAPI from '../hooks/usePlacesAPI';
 import { mapContainerStyle, mapCenter, mapStyles } from '../utils/mapUtils';
 import { GOOGLE_MAPS_API_KEY } from '../utils/config';
+import { useTheme } from '../context/ThemeContext';
 
 interface BusMapProps {
   selectedRoute: string | null;
@@ -18,13 +19,16 @@ interface BusMapProps {
 }
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
-  // Usando o tipo correto diretamente da biblioteca
+  // Using the correct type directly from the library
   const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [showBusStops, setShowBusStops] = useState(true);
+  
+  // Get theme information
+  const { companyColor, companyLightColor } = useTheme();
   
   // Use the custom hook for Places API
   const { busStops, isPlacesApiEnabled } = usePlacesAPI({
@@ -57,6 +61,27 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     !selectedRoute || update.routeId === selectedRoute
   );
 
+  // Apply custom map styles based on the selected company theme
+  const customMapStyles = useMemo(() => {
+    // Start with the default map styles
+    const styles = [...mapStyles];
+    
+    // Add company-specific styling (subtle color hints for transit and roads)
+    styles.push({
+      featureType: "transit",
+      elementType: "geometry",
+      stylers: [{ color: companyLightColor }]
+    });
+    
+    styles.push({
+      featureType: "transit.station",
+      elementType: "labels.icon",
+      stylers: [{ color: companyColor }]
+    });
+    
+    return styles;
+  }, [companyColor, companyLightColor]);
+
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
       <MapLoader mapLoaded={mapLoaded} />
@@ -74,7 +99,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             streetViewControl: false,
             mapTypeControl: false,
             fullscreenControl: false,
-            styles: mapStyles,
+            styles: customMapStyles,
           }}
         >
           {busRoutes.map(route => {

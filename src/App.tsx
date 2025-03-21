@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
+import { ThemeProvider } from "./context/ThemeContext";
+import CompanySelectionPage from "./pages/CompanySelectionPage";
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
 import ContributePage from "./pages/ContributePage";
@@ -61,26 +63,28 @@ const App = () => {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <AdPopup open={showAd} onClose={handleCloseAd} advertisement={currentAd} />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MapPage />} />
-            <Route path="/map" element={<Navigate to="/" replace />} />
-            <Route path="/rotas" element={<RoutesPage />} />
-            <Route path="/rotas/:id" element={<RouteDetailPage />} />
-            <Route path="/contribuir" element={<ContributePage />} />
-            <Route path="/favoritos" element={<FavoritesPage />} />
-            <Route path="/configuracoes" element={<SettingsPage />} />
-            <Route path="/sobre" element={<AboutPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AdPopup open={showAd} onClose={handleCloseAd} advertisement={currentAd} />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<CompanySelectionPage />} />
+              <Route path="/mapa" element={<MapPage />} />
+              <Route path="/rotas" element={<RoutesPage />} />
+              <Route path="/rotas/:id" element={<RouteDetailPage />} />
+              <Route path="/contribuir" element={<ContributePage />} />
+              <Route path="/favoritos" element={<FavoritesPage />} />
+              <Route path="/configuracoes" element={<SettingsPage />} />
+              <Route path="/sobre" element={<AboutPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 
