@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
 import { GoogleMap, LoadScript, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
@@ -50,7 +50,8 @@ const mapStyles = [
 ];
 
 // Memoize the libraries array to prevent reloading
-const libraries = ["places"];
+// Using the correct type for the Libraries
+const libraries = useMemo(() => ["places"], []);
 
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);

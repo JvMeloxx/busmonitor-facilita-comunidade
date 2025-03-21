@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { MapPin, AlertTriangle, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
 import { toast } from 'sonner';
@@ -50,11 +50,15 @@ const mapStyles = [
 ];
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
+  // Memoize the libraries array to prevent reloading
+  const libraries = useMemo(() => ["places"], []);
+  
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [busStops, setBusStops] = useState<BusStop[]>([]);
   const [showBusStops, setShowBusStops] = useState(true);
+  const [isPlacesApiEnabled, setIsPlacesApiEnabled] = useState(true);
   
   useEffect(() => {
     if (selectedRoute) {
@@ -63,7 +67,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   }, [selectedRoute]);
 
   useEffect(() => {
-    if (map && showBusStops) {
+    if (map && showBusStops && isPlacesApiEnabled) {
       fetchBusStops();
     }
   }, [map, showBusStops]);
@@ -77,37 +81,48 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     // Clear existing bus stops
     setBusStops([]);
 
-    const service = new window.google.maps.places.PlacesService(map);
-    
-    // Define the search request
-    const request = {
-      location: center,
-      radius: 5000, // 5km radius
-      type: 'bus_station' // Looking for bus stations/stops
-    };
+    try {
+      const service = new window.google.maps.places.PlacesService(map);
+      
+      // Define the search request
+      const request = {
+        location: center,
+        radius: 5000, // 5km radius
+        type: 'bus_station' // Looking for bus stations/stops
+      };
 
-    // Perform the search
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        console.log("Found bus stops:", results);
-        
-        const newBusStops: BusStop[] = results.map((place, index) => ({
-          id: place.place_id || `stop-${index}`,
-          name: place.name || 'Ponto de ônibus',
-          address: place.vicinity || 'Luziânia - GO',
-          position: {
-            lat: place.geometry?.location?.lat() || center.lat,
-            lng: place.geometry?.location?.lng() || center.lng
+      // Perform the search
+      service.nearbySearch(request, (results, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+          console.log("Found bus stops:", results);
+          
+          const newBusStops: BusStop[] = results.map((place, index) => ({
+            id: place.place_id || `stop-${index}`,
+            name: place.name || 'Ponto de ônibus',
+            address: place.vicinity || 'Luziânia - GO',
+            position: {
+              lat: place.geometry?.location?.lat() || center.lat,
+              lng: place.geometry?.location?.lng() || center.lng
+            }
+          }));
+          
+          setBusStops(newBusStops);
+          toast.success(`${newBusStops.length} pontos de ônibus encontrados`);
+        } else {
+          console.error("Error fetching bus stops:", status);
+          if (status === "REQUEST_DENIED") {
+            setIsPlacesApiEnabled(false);
+            toast.error("API Places não está ativada para esta chave. Mostrando apenas rotas oficiais.");
+          } else {
+            toast.error("Erro ao buscar pontos de ônibus");
           }
-        }));
-        
-        setBusStops(newBusStops);
-        toast.success(`${newBusStops.length} pontos de ônibus encontrados`);
-      } else {
-        console.error("Error fetching bus stops:", status);
-        toast.error("Erro ao buscar pontos de ônibus");
-      }
-    });
+        }
+      });
+    } catch (error) {
+      console.error("Error with Places API:", error);
+      setIsPlacesApiEnabled(false);
+      toast.error("Erro ao carregar a API Places. Mostrando apenas rotas oficiais.");
+    }
   };
 
   // Filter updates to show only selected route or all if none selected
@@ -117,36 +132,45 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
 
   // Convert SVG path to Google Maps polyline coordinates
   const getPolylineCoordinates = (svgPath: string) => {
-    // This is a simplified conversion from SVG path to coordinates
-    // In a real app, you would use actual GPS coordinates
-    const coordinates = [];
-    const commands = svgPath.match(/[MLC][^MLC]*/g) || [];
-    
-    // Process each command in the SVG path
-    let x = 0, y = 0;
-    for (const cmd of commands) {
-      const type = cmd[0];
-      const points = cmd.slice(1).trim().split(/\s+/).map(Number);
+    try {
+      // This is a simplified conversion from SVG path to coordinates
+      // In a real app, you would use actual GPS coordinates
+      const coordinates = [];
+      const commands = svgPath.match(/[MLC][^MLC]*/g) || [];
       
-      if (type === 'M') {
-        // Move to command
-        x = points[0];
-        y = points[1];
-        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
-      } else if (type === 'L') {
-        // Line to command
-        x = points[0];
-        y = points[1];
-        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
-      } else if (type === 'C') {
-        // Cubic bezier - we'll simplify by just using the endpoint
-        x = points[4];
-        y = points[5];
-        coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
+      // Process each command in the SVG path
+      let x = 0, y = 0;
+      for (const cmd of commands) {
+        const type = cmd[0];
+        const points = cmd.slice(1).trim().split(/\s+/).map(Number);
+        
+        if (type === 'M' && !isNaN(points[0]) && !isNaN(points[1])) {
+          // Move to command
+          x = points[0];
+          y = points[1];
+          coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
+        } else if (type === 'L' && !isNaN(points[0]) && !isNaN(points[1])) {
+          // Line to command
+          x = points[0];
+          y = points[1];
+          coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
+        } else if (type === 'C' && points.length >= 6 && !isNaN(points[4]) && !isNaN(points[5])) {
+          // Cubic bezier - we'll simplify by just using the endpoint
+          x = points[4];
+          y = points[5];
+          coordinates.push({ lat: center.lat + (y - 300) / 30000, lng: center.lng + (x - 400) / 30000 });
+        }
       }
+      
+      // Ensure we have valid coordinates
+      return coordinates.filter(coord => 
+        !isNaN(coord.lat) && !isNaN(coord.lng) && 
+        Math.abs(coord.lat) <= 90 && Math.abs(coord.lng) <= 180
+      );
+    } catch (error) {
+      console.error("Error parsing SVG path:", error);
+      return [];
     }
-    
-    return coordinates;
   };
 
   const handleMapLoad = (mapInstance: google.maps.Map) => {
@@ -171,7 +195,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       
       <LoadScript 
         googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"
-        libraries={["places"]}
+        libraries={libraries}
       >
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
@@ -190,6 +214,8 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             if (selectedRoute && route.id !== selectedRoute) return null;
             
             const coordinates = getPolylineCoordinates(route.pathCoordinates);
+            if (coordinates.length === 0) return null;
+            
             const isDashed = selectedRoute !== route.id;
             
             // For dashed lines, we need to create multiple small line segments
@@ -235,54 +261,68 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             const route = busRoutes.find(r => r.id === update.routeId);
             if (!route) return null;
             
-            // Convert pixel coordinates to lat/lng
-            const position = {
-              lat: center.lat + (Number(update.coordinates.y) - 300) / 30000,
-              lng: center.lng + (Number(update.coordinates.x) - 400) / 30000,
-            };
-            
-            const markerId = `${update.routeId}-${index}`;
-            
-            return (
-              <Marker
-                key={markerId}
-                position={position}
-                onClick={() => handleMarkerClick(markerId)}
-                icon={{
-                  path: 'M -10,-10 L 10,-10 L 10,10 L -10,10 z',
-                  fillColor: route.color,
-                  fillOpacity: 1,
-                  scale: 1.5,
-                  strokeColor: 'white',
-                  strokeWeight: 2,
-                }}
-                label={{
-                  text: route.number.toString(),
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                }}
-              >
-                {activeMarker === markerId && (
-                  <InfoWindow onCloseClick={() => setActiveMarker(null)}>
-                    <div className="p-2">
-                      <p className="font-medium">{route.name}</p>
-                      <p className="text-sm">{update.time}</p>
-                      {update.hasIssue && (
-                        <p className="text-red-500 text-sm flex items-center mt-1">
-                          <AlertTriangle size={12} className="mr-1" />
-                          Problema reportado
-                        </p>
-                      )}
-                    </div>
-                  </InfoWindow>
-                )}
-              </Marker>
-            );
+            try {
+              // Validate coordinates before creating marker
+              const y = Number(update.coordinates.y);
+              const x = Number(update.coordinates.x);
+              
+              if (isNaN(y) || isNaN(x)) {
+                console.error(`Invalid coordinates for update:`, update.coordinates);
+                return null;
+              }
+              
+              // Convert pixel coordinates to lat/lng
+              const position = {
+                lat: center.lat + (y - 300) / 30000,
+                lng: center.lng + (x - 400) / 30000,
+              };
+              
+              const markerId = `${update.routeId}-${index}`;
+              
+              return (
+                <Marker
+                  key={markerId}
+                  position={position}
+                  onClick={() => handleMarkerClick(markerId)}
+                  icon={{
+                    path: 'M -10,-10 L 10,-10 L 10,10 L -10,10 z',
+                    fillColor: route.color,
+                    fillOpacity: 1,
+                    scale: 1.5,
+                    strokeColor: 'white',
+                    strokeWeight: 2,
+                  }}
+                  label={{
+                    text: route.number.toString(),
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '12px',
+                  }}
+                >
+                  {activeMarker === markerId && (
+                    <InfoWindow onCloseClick={() => setActiveMarker(null)}>
+                      <div className="p-2">
+                        <p className="font-medium">{route.name}</p>
+                        <p className="text-sm">{update.time}</p>
+                        {update.hasIssue && (
+                          <p className="text-red-500 text-sm flex items-center mt-1">
+                            <AlertTriangle size={12} className="mr-1" />
+                            Problema reportado
+                          </p>
+                        )}
+                      </div>
+                    </InfoWindow>
+                  )}
+                </Marker>
+              );
+            } catch (error) {
+              console.error(`Error rendering bus ${index}:`, error);
+              return null;
+            }
           })}
 
           {/* Bus Stops from Google Places API */}
-          {showBusStops && busStops.map(stop => (
+          {showBusStops && isPlacesApiEnabled && busStops.map(stop => (
             <Marker
               key={stop.id}
               position={stop.position}
@@ -314,18 +354,40 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       </LoadScript>
       
       {/* Toggle for bus stops */}
-      <div className="absolute top-4 right-4 z-10">
-        <button 
-          onClick={() => setShowBusStops(!showBusStops)} 
-          className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
-            showBusStops 
-              ? 'bg-primary text-white' 
-              : 'bg-white text-gray-700'
-          }`}
-        >
-          <BusFront size={16} className="mr-2" />
-          {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
-        </button>
+      {isPlacesApiEnabled && (
+        <div className="absolute top-4 right-4 z-10">
+          <button 
+            onClick={() => setShowBusStops(!showBusStops)} 
+            className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
+              showBusStops 
+                ? 'bg-primary text-white' 
+                : 'bg-white text-gray-700'
+            }`}
+          >
+            <BusFront size={16} className="mr-2" />
+            {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
+          </button>
+        </div>
+      )}
+      
+      {/* Legend */}
+      <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
+        <div className="flex items-center mb-1.5">
+          <div className="w-3 h-3 rounded-full mr-2 bg-blue-500"></div>
+          <span className="text-xs">Rotas de ônibus</span>
+        </div>
+        {isPlacesApiEnabled && (
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-blue-600 mr-2"></div>
+            <span className="text-xs">Pontos do Google</span>
+          </div>
+        )}
+        {!isPlacesApiEnabled && (
+          <div className="flex items-center text-amber-600">
+            <div className="w-3 h-3 bg-amber-500 mr-2"></div>
+            <span className="text-xs">API Places não ativada</span>
+          </div>
+        )}
       </div>
       
       {/* Disclaimer message */}
