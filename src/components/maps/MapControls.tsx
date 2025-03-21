@@ -1,18 +1,26 @@
 
 import React from 'react';
-import { BusFront, MapPin } from 'lucide-react';
+import { BusFront, MapPin, Route } from 'lucide-react';
 
 interface MapControlsProps {
   isPlacesApiEnabled: boolean;
   showBusStops: boolean;
   setShowBusStops: (show: boolean) => void;
+  showRoutes?: boolean;
+  setShowRoutes?: (show: boolean) => void;
 }
 
-export const MapControls = ({ isPlacesApiEnabled, showBusStops, setShowBusStops }: MapControlsProps) => {
+export const MapControls = ({ 
+  isPlacesApiEnabled, 
+  showBusStops, 
+  setShowBusStops,
+  showRoutes = true,
+  setShowRoutes = () => {}
+}: MapControlsProps) => {
   return (
     <>
-      {isPlacesApiEnabled && (
-        <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-2">
+        {isPlacesApiEnabled && (
           <button 
             onClick={() => setShowBusStops(!showBusStops)} 
             className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
@@ -24,8 +32,20 @@ export const MapControls = ({ isPlacesApiEnabled, showBusStops, setShowBusStops 
             <BusFront size={16} className="mr-2" />
             {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
           </button>
-        </div>
-      )}
+        )}
+        
+        <button 
+          onClick={() => setShowRoutes(!showRoutes)} 
+          className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
+            showRoutes 
+              ? 'bg-primary text-white' 
+              : 'bg-white text-gray-700'
+          }`}
+        >
+          <Route size={16} className="mr-2" />
+          {showRoutes ? 'Ocultar Rotas' : 'Mostrar Rotas'}
+        </button>
+      </div>
       
       <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
         <div className="flex items-center mb-1.5">

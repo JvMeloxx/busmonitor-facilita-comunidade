@@ -26,7 +26,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const [activeMarker, setActiveMarker] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [showBusStops, setShowBusStops] = useState(true);
-  const [showRoutes, setShowRoutes] = useState(false); // Added state to control route visibility
+  const [showRoutes, setShowRoutes] = useState(true); // Changed default to true to show routes by default
   
   // Get theme information
   const { company, companyColor, companyLightColor } = useTheme();
@@ -141,6 +141,8 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         isPlacesApiEnabled={isPlacesApiEnabled}
         showBusStops={showBusStops}
         setShowBusStops={setShowBusStops}
+        showRoutes={showRoutes}
+        setShowRoutes={setShowRoutes}
       />
     </div>
   );
