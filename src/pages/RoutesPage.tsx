@@ -15,14 +15,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from 'sonner';
+import { useTheme } from '../context/ThemeContext';
 
 const RoutesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [dayFilter, setDayFilter] = useState<'mondayToFriday' | 'saturdayAndHoliday' | 'sunday'>('mondayToFriday');
+  const { company, companyName, companyColor } = useTheme();
+
+  // Filtrar rotas pela empresa selecionada
+  const companyRoutes = busRoutes.filter(route => {
+    // Se a propriedade company não existir em algumas rotas (para compatibilidade), 
+    // vamos atribuir com base na cor para fins de demonstração
+    if (!route.company) {
+      if (route.color === '#22c55e') return company === 'tarifeZero';
+      if (route.color === '#eab308') return company === 'ctExpresso';
+      if (route.color === '#f97316') return company === 'catedral';
+      return false;
+    }
+    return route.company === company;
+  });
 
   // Filter routes based on search term
-  const filteredRoutes = busRoutes.filter(route => 
+  const filteredRoutes = companyRoutes.filter(route => 
     route.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     route.number.includes(searchTerm)
   );
@@ -72,7 +87,9 @@ const RoutesPage = () => {
             <ArrowLeft size={24} />
           </Link>
           
-          <h1 className="text-xl font-semibold">Rotas e Horários</h1>
+          <h1 className="text-xl font-semibold">
+            Rotas e Horários - {companyName}
+          </h1>
           
           <div className="w-10"></div> {/* Spacer for alignment */}
         </div>
@@ -107,7 +124,7 @@ const RoutesPage = () => {
             <TabsContent value="all" className="space-y-4">
               {filteredRoutes.length === 0 ? (
                 <div className="text-center py-10">
-                  <p className="text-muted-foreground">Nenhuma linha encontrada. Tente outra busca.</p>
+                  <p className="text-muted-foreground">Nenhuma linha encontrada para {companyName}. Tente outra busca ou selecione outra empresa.</p>
                 </div>
               ) : (
                 filteredRoutes.map((route) => (
@@ -178,89 +195,95 @@ const RoutesPage = () => {
                 </Select>
               </div>
 
-              {busRoutes.map((route) => (
-                <div key={route.id}>
-                  <Card className="p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
-                        style={{ backgroundColor: route.color }}
-                      >
-                        {route.number}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{route.name}</h3>
-                        <p className="text-sm text-muted-foreground">{route.terminal.name}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="border-t pt-3">
-                      {/* Morning schedule */}
-                      {getScheduleTimes(route, dayFilter).morning.length > 0 && (
-                        <div className="mb-4">
-                          <h4 className="font-medium mb-2 text-sm">Manhã:</h4>
-                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                            {getScheduleTimes(route, dayFilter).morning.map((time, index) => (
-                              <div 
-                                key={index} 
-                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
-                              >
-                                <Clock size={14} className="mr-1 text-muted-foreground" />
-                                {time}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Afternoon schedule */}
-                      {getScheduleTimes(route, dayFilter).afternoon.length > 0 && (
-                        <div className="mb-4">
-                          <h4 className="font-medium mb-2 text-sm">Tarde:</h4>
-                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                            {getScheduleTimes(route, dayFilter).afternoon.map((time, index) => (
-                              <div 
-                                key={index} 
-                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
-                              >
-                                <Clock size={14} className="mr-1 text-muted-foreground" />
-                                {time}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Evening schedule */}
-                      {getScheduleTimes(route, dayFilter).evening.length > 0 && (
-                        <div>
-                          <h4 className="font-medium mb-2 text-sm">Noite:</h4>
-                          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-                            {getScheduleTimes(route, dayFilter).evening.map((time, index) => (
-                              <div 
-                                key={index} 
-                                className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
-                              >
-                                <Clock size={14} className="mr-1 text-muted-foreground" />
-                                {time}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* No schedules for this day */}
-                      {getScheduleTimes(route, dayFilter).morning.length === 0 && 
-                       getScheduleTimes(route, dayFilter).afternoon.length === 0 && 
-                       getScheduleTimes(route, dayFilter).evening.length === 0 && (
-                        <div className="text-center py-4 text-muted-foreground">
-                          Não há horários disponíveis para este dia
-                        </div>
-                      )}
-                    </div>
-                  </Card>
+              {companyRoutes.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="text-muted-foreground">Nenhuma linha encontrada para {companyName}.</p>
                 </div>
-              ))}
+              ) : (
+                companyRoutes.map((route) => (
+                  <div key={route.id}>
+                    <Card className="p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div 
+                          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
+                          style={{ backgroundColor: route.color }}
+                        >
+                          {route.number}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{route.name}</h3>
+                          <p className="text-sm text-muted-foreground">{route.terminal.name}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t pt-3">
+                        {/* Morning schedule */}
+                        {getScheduleTimes(route, dayFilter).morning.length > 0 && (
+                          <div className="mb-4">
+                            <h4 className="font-medium mb-2 text-sm">Manhã:</h4>
+                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                              {getScheduleTimes(route, dayFilter).morning.map((time, index) => (
+                                <div 
+                                  key={index} 
+                                  className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                                >
+                                  <Clock size={14} className="mr-1 text-muted-foreground" />
+                                  {time}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Afternoon schedule */}
+                        {getScheduleTimes(route, dayFilter).afternoon.length > 0 && (
+                          <div className="mb-4">
+                            <h4 className="font-medium mb-2 text-sm">Tarde:</h4>
+                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                              {getScheduleTimes(route, dayFilter).afternoon.map((time, index) => (
+                                <div 
+                                  key={index} 
+                                  className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                                >
+                                  <Clock size={14} className="mr-1 text-muted-foreground" />
+                                  {time}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Evening schedule */}
+                        {getScheduleTimes(route, dayFilter).evening.length > 0 && (
+                          <div>
+                            <h4 className="font-medium mb-2 text-sm">Noite:</h4>
+                            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                              {getScheduleTimes(route, dayFilter).evening.map((time, index) => (
+                                <div 
+                                  key={index} 
+                                  className="bg-accent rounded-md p-2 text-center text-sm flex items-center justify-center"
+                                >
+                                  <Clock size={14} className="mr-1 text-muted-foreground" />
+                                  {time}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* No schedules for this day */}
+                        {getScheduleTimes(route, dayFilter).morning.length === 0 && 
+                        getScheduleTimes(route, dayFilter).afternoon.length === 0 && 
+                        getScheduleTimes(route, dayFilter).evening.length === 0 && (
+                          <div className="text-center py-4 text-muted-foreground">
+                            Não há horários disponíveis para este dia
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  </div>
+                ))
+              )}
             </TabsContent>
           </Tabs>
         </div>

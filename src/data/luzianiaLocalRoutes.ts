@@ -1,4 +1,3 @@
-
 import { BusRoute } from "../types/busTypes";
 import { terminalLuziania } from "./terminals";
 
@@ -11,6 +10,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao bairro Industrial",
     color: "#4361ee",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {
@@ -53,6 +53,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao bairro São Caetano via Setor Leste",
     color: "#e63946",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {
@@ -101,6 +102,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao Setor Leste",
     color: "#43aa8b",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {
@@ -143,6 +145,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao Parque Santa Fé",
     color: "#fb8500",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {
@@ -185,6 +188,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao Fumal e Parque Santa Fé",
     color: "#f28c38",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {
@@ -233,6 +237,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     description: "Linha que conecta o Terminal Rodoviário de Luziânia ao Parque Alvorada",
     color: "#2a9d8f",
     frequency: "Horários programados conforme tabela",
+    company: "tarifeZero", // Tarifa Zero
     terminal: terminalLuziania,
     stops: [
       {

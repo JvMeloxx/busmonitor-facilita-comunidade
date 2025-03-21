@@ -1,4 +1,3 @@
-
 import { BusRoute } from "../types/busTypes";
 import { terminalLuziania } from "./terminals";
 
@@ -11,6 +10,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (LUZIÂNIA SHOPPING - AV. ALFREDO NASSER) / GUARÁ I E II (BR-040 - PARK SHOPPING)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {
@@ -53,6 +53,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (LUZIÂNIA SHOPPING - AV. ALFREDO NASSER) / LAGO SUL (BR-040 - AEROPORTO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {
@@ -95,6 +96,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (LUZIÂNIA SHOPPING - AV. ALFREDO NASSER) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - PARK SHOPPING - EIXO SUL)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {
@@ -143,6 +145,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (LUZIÂNIA SHOPPING - AV. ALFREDO NASSER) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - ZOOLÓGICO - EIXO - ESPLANADA)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {
@@ -197,6 +200,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (LUZIÂNIA SHOPPING - AV. ALFREDO NASSER) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - ZOOLÓGICO - EIXO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {
@@ -245,6 +249,7 @@ export const ctExpressoRoutesDf: BusRoute[] = [
     description: "LUZIÂNIA (PARQUE ESTRELA DALVA I - JARDIM LUZILIA - SOL NASCENTE) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - ZOOLÓGICO - EIXO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // CT Expresso
     terminal: terminalLuziania,
     stops: [
       {

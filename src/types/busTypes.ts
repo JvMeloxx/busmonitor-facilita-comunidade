@@ -29,6 +29,7 @@ export interface BusRoute {
   description: string;
   color: string;
   frequency: string;
+  company: 'tarifeZero' | 'ctExpresso' | 'catedral'; // Adicionada propriedade da empresa
   terminal: {
     name: string;
     coordinates: {
