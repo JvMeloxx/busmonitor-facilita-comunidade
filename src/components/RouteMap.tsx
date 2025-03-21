@@ -1,25 +1,21 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
-import { GoogleMap, LoadScript, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { toast } from 'sonner';
+import MapLoader from './maps/MapLoader';
+import RoutePolyline from './maps/RoutePolyline';
+import BusUpdateMarker from './maps/BusUpdateMarker';
+import BusStopMarker from './maps/BusStopMarker';
+import MapControls from './maps/MapControls';
+import usePlacesAPI from '../hooks/usePlacesAPI';
+import RouteStopMarker from './maps/RouteStopMarker';
 
 interface RouteMapProps {
   routeId: string;
   routeColor: string;
 }
-
-interface BusStop {
-  id: string;
-  name: string;
-  address: string;
-  position: {
-    lat: number;
-    lng: number;
-  };
-}
-
-type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
 
 const mapContainerStyle = {
   width: '100%',
@@ -48,73 +44,44 @@ const mapStyles = [
   }
 ];
 
-const libraries = useMemo<Libraries>(() => ["places"], []);
-
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [busStops, setBusStops] = useState<BusStop[]>([]);
-  const [showPlacesStops, setShowPlacesStops] = useState(true);
+  const [showBusStops, setShowBusStops] = useState(true);
   const [activePlacesStop, setActivePlacesStop] = useState<string | null>(null);
-  const [isPlacesApiEnabled, setIsPlacesApiEnabled] = useState(true);
+  
+  // Use memoized value of libraries to prevent unnecessary reloads of the LoadScript component
+  const libraries = useMemo(() => ["places"], []);
   
   const route = busRoutes.find(r => r.id === routeId);
   const updates = recentUpdates.filter(update => update.routeId === routeId);
   
   if (!route) return null;
 
-  useEffect(() => {
-    if (map && showPlacesStops && isPlacesApiEnabled) {
-      fetchBusStops();
-    }
-  }, [map, showPlacesStops]);
+  // Use the custom hook for Places API
+  const { busStops, isPlacesApiEnabled } = usePlacesAPI({
+    map,
+    showBusStops,
+    center
+  });
 
-  const fetchBusStops = () => {
-    if (!map || !window.google || !window.google.maps) {
-      console.error("Google Maps API not loaded");
-      return;
-    }
+  const handleMapLoad = (mapInstance: google.maps.Map) => {
+    setMapLoaded(true);
+    setMap(mapInstance);
+  };
 
-    setBusStops([]);
+  const handleStopMarkerClick = (index: number) => {
+    setActiveStopIndex(index);
+  };
 
-    try {
-      const service = new window.google.maps.places.PlacesService(map);
-      
-      const request = {
-        location: center,
-        radius: 5000, // 5km radius
-        type: 'bus_station' // Looking for bus stations/stops
-      };
-
-      service.nearbySearch(request, (results, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-          console.log("Found bus stops:", results);
-          
-          const newBusStops: BusStop[] = results.map((place, index) => ({
-            id: place.place_id || `stop-${index}`,
-            name: place.name || 'Ponto de ônibus',
-            address: place.vicinity || 'Luziânia - GO',
-            position: {
-              lat: place.geometry?.location?.lat() || center.lat,
-              lng: place.geometry?.location?.lng() || center.lng
-            }
-          }));
-          
-          setBusStops(newBusStops);
-        } else {
-          console.error("Error fetching bus stops:", status);
-          if (status === "REQUEST_DENIED") {
-            setIsPlacesApiEnabled(false);
-            toast.error("API Places não está ativada para esta chave. Mostrando apenas rotas oficiais.");
-          }
-        }
-      });
-    } catch (error) {
-      console.error("Error with Places API:", error);
-      setIsPlacesApiEnabled(false);
-      toast.error("Erro ao carregar a API Places. Mostrando apenas rotas oficiais.");
-    }
+  const handleBusStopMarkerClick = (markerId: string) => {
+    setActivePlacesStop(markerId);
+  };
+  
+  const clearActiveMarkers = () => {
+    setActiveStopIndex(null);
+    setActivePlacesStop(null);
   };
 
   const getPolylineCoordinates = (svgPath: string) => {
@@ -152,21 +119,9 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
     }
   };
 
-  const handleMapLoad = (mapInstance: google.maps.Map) => {
-    setMapLoaded(true);
-    setMap(mapInstance);
-  };
-
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
-      {!mapLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p className="text-muted-foreground">Carregando mapa...</p>
-          </div>
-        </div>
-      )}
+      <MapLoader mapLoaded={mapLoaded} />
       
       <LoadScript 
         googleMapsApiKey="AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"
@@ -187,177 +142,68 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
           {(() => {
             const coordinates = getPolylineCoordinates(route.pathCoordinates);
             return coordinates.length > 0 ? (
-              <Polyline
-                path={coordinates}
-                options={{
-                  strokeColor: routeColor,
-                  strokeOpacity: 1,
-                  strokeWeight: 6,
+              <RoutePolyline
+                route={{
+                  id: routeId,
+                  color: routeColor,
+                  pathCoordinates: route.pathCoordinates
                 }}
+                selectedRoute={routeId}
+                mapCenter={center}
+                onClick={() => {}}
               />
             ) : null;
           })()}
           
-          {route.stops.map((stop, index) => {
-            try {
-              const y = Number(stop.coordinates.y);
-              const x = Number(stop.coordinates.x);
-              
-              if (isNaN(y) || isNaN(x)) {
-                console.error(`Invalid coordinates for stop ${stop.name}:`, stop.coordinates);
-                return null;
-              }
-              
-              const position = {
-                lat: center.lat + (y - 300) / 30000,
-                lng: center.lng + (x - 400) / 30000,
-              };
-              
-              return (
-                <Marker
-                  key={`stop-${index}`}
-                  position={position}
-                  onClick={() => setActiveStopIndex(index)}
-                  icon={{
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: '#ffffff',
-                    fillOpacity: 1,
-                    scale: 8,
-                    strokeColor: routeColor,
-                    strokeWeight: 2,
-                  }}
-                  label={{
-                    text: (index + 1).toString(),
-                    color: '#000000',
-                    fontSize: '10px',
-                  }}
-                >
-                  {activeStopIndex === index && (
-                    <InfoWindow onCloseClick={() => setActiveStopIndex(null)}>
-                      <div className="p-2">
-                        <p className="font-medium">{stop.name}</p>
-                        <p className="text-sm">{stop.address}</p>
-                      </div>
-                    </InfoWindow>
-                  )}
-                </Marker>
-              );
-            } catch (error) {
-              console.error(`Error rendering stop ${index}:`, error);
-              return null;
-            }
-          })}
+          {route.stops.map((stop, index) => (
+            <RouteStopMarker
+              key={`route-stop-${index}`}
+              stop={stop}
+              index={index}
+              routeColor={routeColor}
+              mapCenter={center}
+              activeStopIndex={activeStopIndex}
+              onMarkerClick={handleStopMarkerClick}
+              onCloseClick={clearActiveMarkers}
+            />
+          ))}
           
           {updates.map((update, index) => {
-            try {
-              const y = Number(update.coordinates.y);
-              const x = Number(update.coordinates.x);
-              
-              if (isNaN(y) || isNaN(x)) {
-                console.error(`Invalid coordinates for update:`, update.coordinates);
-                return null;
-              }
-              
-              const position = {
-                lat: center.lat + (y - 300) / 30000,
-                lng: center.lng + (x - 400) / 30000,
-              };
-              
-              return (
-                <Marker
-                  key={`bus-${index}`}
-                  position={position}
-                  icon={{
-                    path: 'M -10,-10 L 10,-10 L 10,10 L -10,10 z',
-                    fillColor: routeColor,
-                    fillOpacity: 1,
-                    scale: 1.5,
-                    strokeColor: 'white',
-                    strokeWeight: 2,
-                  }}
-                  label={{
-                    text: route.number.toString(),
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: '12px',
-                  }}
-                />
-              );
-            } catch (error) {
-              console.error(`Error rendering bus ${index}:`, error);
-              return null;
-            }
+            return (
+              <BusUpdateMarker
+                key={`update-${update.routeId}-${index}`}
+                update={update}
+                route={{
+                  color: routeColor,
+                  name: route.name,
+                  number: route.number
+                }}
+                index={index}
+                mapCenter={center}
+                activeMarker={activePlacesStop}
+                onClick={handleBusStopMarkerClick}
+                onCloseClick={clearActiveMarkers}
+              />
+            );
           })}
 
-          {showPlacesStops && isPlacesApiEnabled && busStops.map(stop => (
-            <Marker
+          {showBusStops && isPlacesApiEnabled && busStops.map(stop => (
+            <BusStopMarker
               key={stop.id}
-              position={stop.position}
-              onClick={() => setActivePlacesStop(stop.id)}
-              icon={{
-                path: 'M 0,0 m -2,-2 v 4 h 4 v -4 z',
-                fillColor: '#4171E1',
-                fillOpacity: 0.8,
-                scale: 2,
-                strokeColor: 'white',
-                strokeWeight: 1,
-              }}
-            >
-              {activePlacesStop === stop.id && (
-                <InfoWindow onCloseClick={() => setActivePlacesStop(null)}>
-                  <div className="p-2">
-                    <p className="font-medium">{stop.name}</p>
-                    <p className="text-sm">{stop.address}</p>
-                    <div className="flex items-center mt-2 text-xs text-blue-600">
-                      <BusFront size={14} className="mr-1" />
-                      Ponto de ônibus
-                    </div>
-                  </div>
-                </InfoWindow>
-              )}
-            </Marker>
+              stop={stop}
+              activeMarker={activePlacesStop}
+              onClick={handleBusStopMarkerClick}
+              onCloseClick={clearActiveMarkers}
+            />
           ))}
         </GoogleMap>
       </LoadScript>
       
-      {isPlacesApiEnabled && (
-        <div className="absolute top-4 right-4 z-10">
-          <button 
-            onClick={() => setShowPlacesStops(!showPlacesStops)} 
-            className={`px-3 py-2 rounded-md text-sm font-medium flex items-center shadow-md ${
-              showPlacesStops 
-                ? 'bg-primary text-white' 
-                : 'bg-white text-gray-700'
-            }`}
-          >
-            <BusFront size={16} className="mr-2" />
-            {showPlacesStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
-          </button>
-        </div>
-      )}
-      
-      <div className="absolute bottom-4 left-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-sm">
-        <div className="flex items-center mb-1.5">
-          <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: routeColor }}></div>
-          <span className="text-xs">Rota do ônibus</span>
-        </div>
-        <div className="flex items-center mb-1.5">
-          <div className="w-3 h-3 rounded-full border mr-2" style={{ borderColor: routeColor }}></div>
-          <span className="text-xs">Pontos oficiais</span>
-        </div>
-        {isPlacesApiEnabled && (
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-blue-600 mr-2"></div>
-            <span className="text-xs">Pontos do Google</span>
-          </div>
-        )}
-        {!isPlacesApiEnabled && (
-          <div className="flex items-center text-amber-600">
-            <div className="w-3 h-3 bg-amber-500 mr-2"></div>
-            <span className="text-xs">API Places não ativada</span>
-          </div>
-        )}
-      </div>
+      <MapControls 
+        isPlacesApiEnabled={isPlacesApiEnabled}
+        showBusStops={showBusStops}
+        setShowBusStops={setShowBusStops}
+      />
     </div>
   );
 };

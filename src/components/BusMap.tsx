@@ -43,7 +43,7 @@ const mapStyles = [
 ];
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
-  // Use libraries as a simple array of strings, not a custom type
+  // Use memoized value of libraries to prevent unnecessary reloads of the LoadScript component
   const libraries = useMemo(() => ["places"], []);
   
   const [mapLoaded, setMapLoaded] = useState(false);
