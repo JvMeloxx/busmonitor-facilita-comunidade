@@ -64,7 +64,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       companyLightColor = '#fef9c3'; // Yellow-100
       break;
     case 'catedral':
-      companyName = 'Catedral (Kandango)';
+      companyName = 'Catedral';
       companyColor = '#f97316'; // Orange-500
       companyLightColor = '#ffedd5'; // Orange-100
       break;
