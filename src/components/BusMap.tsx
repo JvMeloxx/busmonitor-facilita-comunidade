@@ -9,38 +9,12 @@ import BusUpdateMarker from './maps/BusUpdateMarker';
 import BusStopMarker from './maps/BusStopMarker';
 import MapControls from './maps/MapControls';
 import usePlacesAPI from '../hooks/usePlacesAPI';
+import { mapContainerStyle, mapCenter, mapStyles } from '../utils/mapUtils';
 
 interface BusMapProps {
   selectedRoute: string | null;
   setSelectedRoute: (id: string | null) => void;
 }
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-  borderRadius: '0.75rem',
-};
-
-const center = {
-  lat: -16.2514467,
-  lng: -47.9282398,
-};
-
-const mapStyles = [
-  {
-    featureType: "poi",
-    stylers: [{ visibility: "off" }]
-  },
-  {
-    featureType: "transit.station",
-    elementType: "labels.icon",
-    stylers: [{ visibility: "off" }]
-  },
-  {
-    featureType: "transit.station.bus",
-    stylers: [{ visibility: "on" }]
-  }
-];
 
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   // Usando o tipo correto diretamente da biblioteca
@@ -55,7 +29,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const { busStops, isPlacesApiEnabled } = usePlacesAPI({
     map,
     showBusStops,
-    center
+    center: mapCenter
   });
   
   useEffect(() => {
@@ -92,7 +66,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       >
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
-          center={center}
+          center={mapCenter}
           zoom={13}
           onLoad={handleMapLoad}
           options={{
@@ -109,7 +83,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
                 key={route.id}
                 route={route}
                 selectedRoute={selectedRoute}
-                mapCenter={center}
+                mapCenter={mapCenter}
                 onClick={setSelectedRoute}
               />
             );
@@ -125,7 +99,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
                 update={update}
                 route={route}
                 index={index}
-                mapCenter={center}
+                mapCenter={mapCenter}
                 activeMarker={activeMarker}
                 onClick={handleMarkerClick}
                 onCloseClick={clearActiveMarker}
