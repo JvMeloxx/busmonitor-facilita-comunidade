@@ -61,27 +61,6 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     !selectedRoute || update.routeId === selectedRoute
   );
 
-  // Apply custom map styles based on the selected company theme
-  const customMapStyles = useMemo(() => {
-    // Start with the default map styles
-    const styles = [...mapStyles];
-    
-    // Add company-specific styling (subtle color hints for transit and roads)
-    styles.push({
-      featureType: "transit",
-      elementType: "geometry",
-      stylers: [{ visibility: "on" }]
-    });
-    
-    styles.push({
-      featureType: "transit.station",
-      elementType: "labels.icon",
-      stylers: [{ visibility: "on" }]
-    });
-    
-    return styles;
-  }, []);
-
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
       <MapLoader mapLoaded={mapLoaded} />
@@ -99,7 +78,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             streetViewControl: false,
             mapTypeControl: false,
             fullscreenControl: false,
-            styles: customMapStyles,
+            styles: mapStyles,
           }}
         >
           {busRoutes.map(route => {

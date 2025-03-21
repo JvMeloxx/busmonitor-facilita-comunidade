@@ -47,12 +47,12 @@ export const getPolylineCoordinates = (svgPath: string, mapCenter: { lat: number
 export const mapStyles = [
   {
     featureType: "poi",
-    stylers: [{ visibility: "off" }]
+    stylers: [{ visibility: "simplified" }]
   },
   {
     featureType: "transit.station",
     elementType: "labels.icon",
-    stylers: [{ visibility: "off" }]
+    stylers: [{ visibility: "on" }]
   },
   {
     featureType: "transit.station.bus",
