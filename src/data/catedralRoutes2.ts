@@ -1,4 +1,3 @@
-
 import { BusRoute } from "../types/busTypes";
 import { terminalJardimInga } from "./terminals";
 
@@ -11,6 +10,7 @@ export const catedralRoutes2: BusRoute[] = [
     description: "Linha que conecta o Jardim Ingá à L2 Sul e Norte via Zoológico e UNB",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -65,6 +65,7 @@ export const catedralRoutes2: BusRoute[] = [
     description: "Linha que conecta a L2 Sul e Norte ao Jardim Ingá via UNB e Zoológico",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -119,6 +120,7 @@ export const catedralRoutes2: BusRoute[] = [
     description: "Linha que conecta o Jardim Ingá à Rodoviária de Taguatinga Norte",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -185,6 +187,7 @@ export const catedralRoutes2: BusRoute[] = [
     description: "Linha que conecta a Rodoviária de Taguatinga Norte ao Jardim Ingá",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -251,6 +254,7 @@ export const catedralRoutes2: BusRoute[] = [
     description: "Linha que conecta o Jardim Ingá ao Gama Centro via Setor Sul e Leste",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -299,5 +303,3 @@ export const catedralRoutes2: BusRoute[] = [
     pathCoordinates: "M 50% 50% L 55% 40% L 57% 38% L 58% 36%"
   }
 ];
-
-// Continue adding more routes as needed

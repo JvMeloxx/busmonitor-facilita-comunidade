@@ -10,6 +10,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha que conecta o Jardim Ingá à Rodoviária do Plano Piloto via Zoológico",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -58,6 +59,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha que conecta a Rodoviária do Plano Piloto ao Jardim Ingá via Zoológico",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -106,6 +108,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha expressa que conecta o Jardim Ingá à Rodoviária do Plano Piloto via Zoológico e BRT",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -160,6 +163,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha expressa que conecta a Rodoviária do Plano Piloto ao Jardim Ingá via Zoológico e BRT",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -214,6 +218,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha que conecta o Jardim Ingá à Rodoviária do Plano Piloto via Park Shopping",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {
@@ -262,6 +267,7 @@ export const catedralRoutes: BusRoute[] = [
     description: "Linha que conecta a Rodoviária do Plano Piloto ao Jardim Ingá via Park Shopping",
     color: "#e74c3c", // Red for Catedral
     frequency: "Horários programados conforme tabela",
+    company: "catedral", // Added company property
     terminal: terminalJardimInga,
     stops: [
       {

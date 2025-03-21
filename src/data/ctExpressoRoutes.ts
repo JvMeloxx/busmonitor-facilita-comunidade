@@ -1,4 +1,3 @@
-
 import { BusRoute } from "../types/busTypes";
 import { terminalLuziania } from "./terminals";
 
@@ -11,6 +10,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (PARQUE ESTRELA DALVA I - JARDIM LUZILIA - SOL NASCENTE) / W3 NORTE (BR-040 - PARK SHOPPING - SIG)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -53,6 +53,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (SHOPPING LUZIÂNIA - AV. ALFREDO NASSER) / TERMINAL DE INTEGRAÇÃO SANTA MARIA (AVENIDA ALAGADO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -95,6 +96,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (SHOPPING LUZIÂNIA - AV. ALFREDO NASSER) / W3 SUL E NORTE (BR-040 - PARK SHOPPING - SPS)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -137,6 +139,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (SHOPPING LUZIÂNIA - AV. ALFREDO NASSER) / ÁGUAS CLARAS (BR-040 - EPCT - EPNB - PISTÃO SUL)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -179,6 +182,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (SHOPPING LUZIÂNIA - PARQUE JK - PARQUE ALVORADA I ) / W3 SUL E NORTE (BR-040 - PARK SHOPPING - SPS)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -227,6 +231,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA (SHOPPING LUZIÂNIA - PARQUE JK - PARQUE ALVORADA I) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - PARK SHOPPING - EIXO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -275,6 +280,7 @@ export const ctExpressoRoutes: BusRoute[] = [
     description: "LUZIÂNIA - RODOVIÁRIA DE TAGUATINGA, VIA PISTÃO SUL",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -317,4 +323,3 @@ export const ctExpressoRoutes: BusRoute[] = [
     pathCoordinates: "M 50% 50% L 60% 35% L 62% 32%"
   }
 ];
-
