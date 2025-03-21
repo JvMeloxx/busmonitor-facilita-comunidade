@@ -1,9 +1,144 @@
 
-import { BusRoute } from "../types/busTypes";
-import { terminalLuziania } from "./terminals";
+import { BusRoute } from "../../types/busTypes";
+import { terminalLuziania } from "../terminals";
 
-// Additional CT Expresso routes (continued)
-export const ctExpressoRoutes3: BusRoute[] = [
+// CT Expresso routes: 017-022
+export const ctExpressoRoutes017to022: BusRoute[] = [
+  {
+    id: "luziania-w3-norte-setor-grafico",
+    number: "017",
+    name: "LUZIÂNIA / W3 NORTE SETOR GRÁFICO",
+    description: "LUZIÂNIA/W3 NORTE SETOR GRÁFICO",
+    color: "#eab308", // Yellow for CT Expresso
+    frequency: "Horários programados conforme tabela",
+    company: "ctExpresso",
+    terminal: terminalLuziania,
+    stops: [
+      {
+        id: "stop-017-1",
+        name: "Luziânia Shopping",
+        address: "Luziânia Shopping, Luziânia - GO",
+        coordinates: { x: "50%", y: "50%" }
+      },
+      {
+        id: "stop-017-2",
+        name: "W3 Norte",
+        address: "W3 Norte, Brasília - DF",
+        coordinates: { x: "70%", y: "25%" }
+      },
+      {
+        id: "stop-017-3",
+        name: "Setor Gráfico",
+        address: "Setor Gráfico, Brasília - DF",
+        coordinates: { x: "72%", y: "23%" }
+      }
+    ],
+    schedule: {
+      mondayToFriday: {
+        morning: ["05:20"],
+        afternoon: [],
+        evening: []
+      },
+      saturdayAndHoliday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      },
+      sunday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      }
+    },
+    nextScheduledTime: "05:20",
+    pathCoordinates: "M 50% 50% L 70% 25% L 72% 23%"
+  },
+  {
+    id: "estrela-dalva-2-w3-norte",
+    number: "018",
+    name: "PARQUE ESTRELA DALVA 2, 4, 8 E 5 / W3 NORTE",
+    description: "PARQUE ESTRELA DALVA 2, 4, 8 E 5 (AV. ALFREDO NASSER) / W3 NORTE (BR-040 - PARK SHOPPING - SPS - EIXO)",
+    color: "#eab308", // Yellow for CT Expresso
+    frequency: "Horários programados conforme tabela",
+    company: "ctExpresso",
+    terminal: terminalLuziania,
+    stops: [
+      {
+        id: "stop-018-1",
+        name: "Parque Estrela Dalva 2, 4, 8 e 5",
+        address: "Parque Estrela Dalva, Luziânia - GO",
+        coordinates: { x: "45%", y: "55%" }
+      },
+      {
+        id: "stop-018-2",
+        name: "W3 Norte",
+        address: "W3 Norte, Brasília - DF",
+        coordinates: { x: "70%", y: "25%" }
+      }
+    ],
+    schedule: {
+      mondayToFriday: {
+        morning: ["05:25"],
+        afternoon: ["17:00"],
+        evening: []
+      },
+      saturdayAndHoliday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      },
+      sunday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      }
+    },
+    nextScheduledTime: "05:25",
+    pathCoordinates: "M 45% 55% L 70% 25%"
+  },
+  {
+    id: "estrela-dalva-2-rodoviaria-pp",
+    number: "019",
+    name: "PARQUE ESTRELA DALVA 2, 4, 8 E 5 / RODOVIÁRIA DO PLANO PILOTO",
+    description: "PARQUE ESTRELA DALVA II - IV - VIII - V (AV. ALFREDO NASSER) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - PARK SHOPPING - SPS - ZOOLÓGICO - EIXO)",
+    color: "#eab308", // Yellow for CT Expresso
+    frequency: "Horários programados conforme tabela",
+    company: "ctExpresso",
+    terminal: terminalLuziania,
+    stops: [
+      {
+        id: "stop-019-1",
+        name: "Parque Estrela Dalva 2, 4, 8 e 5",
+        address: "Parque Estrela Dalva, Luziânia - GO",
+        coordinates: { x: "45%", y: "55%" }
+      },
+      {
+        id: "stop-019-2",
+        name: "Rodoviária do Plano Piloto",
+        address: "Rodoviária do Plano Piloto, Brasília - DF",
+        coordinates: { x: "70%", y: "25%" }
+      }
+    ],
+    schedule: {
+      mondayToFriday: {
+        morning: ["04:55"],
+        afternoon: ["16:45", "17:25"],
+        evening: ["19:30"]
+      },
+      saturdayAndHoliday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      },
+      sunday: {
+        morning: [],
+        afternoon: [],
+        evening: []
+      }
+    },
+    nextScheduledTime: "04:55",
+    pathCoordinates: "M 45% 55% L 70% 25%"
+  },
   {
     id: "luziania-brt-santa-maria",
     number: "020",
@@ -11,7 +146,7 @@ export const ctExpressoRoutes3: BusRoute[] = [
     description: "ROD. LUZIANIA/GO - BRT SANTA MARIA VIA BR 040",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
-    company: "ctExpresso", // Added company property
+    company: "ctExpresso",
     terminal: terminalLuziania,
     stops: [
       {
@@ -60,7 +195,7 @@ export const ctExpressoRoutes3: BusRoute[] = [
     description: "ROD. LUZIÂNIA/GO - POLO JK SANTA MARIA VIA BR 040",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
-    company: "ctExpresso", // Added company property
+    company: "ctExpresso",
     terminal: terminalLuziania,
     stops: [
       {
@@ -109,7 +244,7 @@ export const ctExpressoRoutes3: BusRoute[] = [
     description: "ROD. LUZIÂNIA/GO - POLO JK SANTA MARIA VIA BR 040",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
-    company: "ctExpresso", // Added company property
+    company: "ctExpresso",
     terminal: terminalLuziania,
     stops: [
       {

@@ -11,6 +11,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "LUZIÂNIA - RODOVIÁRIA DO GAMA VIA DF-290/AV. CENTRAL",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -59,6 +60,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "LUZIÂNIA – ROD. GAMA VIA PQ. ALVORADA / DF-290",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -113,6 +115,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "LUZIÂNIA/GAMA, VIA PARQUE ALVORADA",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -161,6 +164,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "LUZIÂNIA/W3 NORTE SETOR GRÁFICO",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -209,6 +213,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "PARQUE ESTRELA DALVA 2, 4, 8 E 5 (AV. ALFREDO NASSER) / W3 NORTE (BR-040 - PARK SHOPPING - SPS - EIXO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -251,6 +256,7 @@ export const ctExpressoRoutes2: BusRoute[] = [
     description: "PARQUE ESTRELA DALVA II - IV - VIII - V (AV. ALFREDO NASSER) / RODOVIÁRIA DO PLANO PILOTO (BR-040 - PARK SHOPPING - SPS - ZOOLÓGICO - EIXO)",
     color: "#eab308", // Yellow for CT Expresso
     frequency: "Horários programados conforme tabela",
+    company: "ctExpresso", // Added company property
     terminal: terminalLuziania,
     stops: [
       {
@@ -287,4 +293,3 @@ export const ctExpressoRoutes2: BusRoute[] = [
     pathCoordinates: "M 45% 55% L 70% 25%"
   }
 ];
-

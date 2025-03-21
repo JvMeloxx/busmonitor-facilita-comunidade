@@ -1,11 +1,8 @@
 
 import { luzianiaLocalRoutes } from './luzianiaLocalRoutes';
 import { ctExpressoRoutesDf } from './ctExpressoRoutesDf';
-import { ctExpressoRoutes } from './ctExpressoRoutes';
-import { ctExpressoRoutes2 } from './ctExpressoRoutes2';
-import { ctExpressoRoutes3 } from './ctExpressoRoutes3';
-import { catedralRoutes } from './catedralRoutes';
-import { catedralRoutes2 } from './catedralRoutes2';
+import { ctExpressoRoutes, ctExpressoRoutes2, ctExpressoRoutes3 } from './ctExpresso/index';
+import { catedralRoutes, catedralRoutes2 } from './catedral/index';
 import { recentUpdates } from './busUpdates';
 import { updateNextScheduledTimes } from '../utils/scheduleUtils';
 
