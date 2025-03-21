@@ -29,8 +29,9 @@ const SearchBar = ({
             ref={searchInputRef}
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Busque por bairro, ponto ou linha..."
+            placeholder="Busque por bairro, número ou linha (ex: 6001, 113.2, Jardim Ingá)..."
             className="w-full pr-10"
+            autoFocus
           />
           {searchTerm && (
             <Button 
@@ -50,7 +51,7 @@ const SearchBar = ({
           onClick={onFocusSearch}
         >
           <Search size={16} className="mr-2" />
-          Busque por bairro, ponto ou linha...
+          Busque por bairro, número ou linha (ex: 6001, 113.2, Jardim Ingá)...
         </Button>
       )}
     </div>

@@ -1,11 +1,20 @@
 
-import { BusRoute } from "../types/busTypes";
+// Terminal locations data
 
-// Terminal definitions for reuse
 export const terminalLuziania = {
   name: "Terminal Rodoviário de Luziânia",
   coordinates: {
-    lat: -16.25884,
-    lng: -47.95932
+    lat: -16.253356,
+    lng: -47.950857
   }
 };
+
+export const terminalJardimInga = {
+  name: "Terminal Jardim Ingá",
+  coordinates: {
+    lat: -16.208679,
+    lng: -47.938187
+  }
+};
+
+// Add other terminals as needed

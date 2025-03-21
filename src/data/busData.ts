@@ -4,6 +4,8 @@ import { ctExpressoRoutesDf } from './ctExpressoRoutesDf';
 import { ctExpressoRoutes } from './ctExpressoRoutes';
 import { ctExpressoRoutes2 } from './ctExpressoRoutes2';
 import { ctExpressoRoutes3 } from './ctExpressoRoutes3';
+import { catedralRoutes } from './catedralRoutes';
+import { catedralRoutes2 } from './catedralRoutes2';
 import { recentUpdates } from './busUpdates';
 import { updateNextScheduledTimes } from '../utils/scheduleUtils';
 
@@ -13,7 +15,9 @@ const allRoutes = [
   ...ctExpressoRoutesDf,
   ...ctExpressoRoutes,
   ...ctExpressoRoutes2,
-  ...ctExpressoRoutes3
+  ...ctExpressoRoutes3,
+  ...catedralRoutes,
+  ...catedralRoutes2
 ];
 
 // Update the next scheduled times when the module is loaded
