@@ -70,17 +70,17 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
     styles.push({
       featureType: "transit",
       elementType: "geometry",
-      stylers: [{ color: companyLightColor }]
+      stylers: [{ visibility: "on" }]
     });
     
     styles.push({
       featureType: "transit.station",
       elementType: "labels.icon",
-      stylers: [{ color: companyColor }]
+      stylers: [{ visibility: "on" }]
     });
     
     return styles;
-  }, [companyColor, companyLightColor]);
+  }, []);
 
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
