@@ -10,6 +10,7 @@ import usePlacesAPI from '../hooks/usePlacesAPI';
 import RouteStopMarker from './maps/RouteStopMarker';
 import BusStopMarker from './maps/BusStopMarker';
 import { mapContainerStyle, mapCenter, mapStyles, getPolylineCoordinates } from '../utils/mapUtils';
+import { GOOGLE_MAPS_API_KEY } from '../utils/config';
 
 interface RouteMapProps {
   routeId: string;
@@ -64,7 +65,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
       <MapLoader mapLoaded={mapLoaded} />
       
       <LoadScript 
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"}
+        googleMapsApiKey={GOOGLE_MAPS_API_KEY}
         libraries={libraries}
       >
         <GoogleMap

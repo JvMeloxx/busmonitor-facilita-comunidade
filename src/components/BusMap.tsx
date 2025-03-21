@@ -10,6 +10,7 @@ import BusStopMarker from './maps/BusStopMarker';
 import MapControls from './maps/MapControls';
 import usePlacesAPI from '../hooks/usePlacesAPI';
 import { mapContainerStyle, mapCenter, mapStyles } from '../utils/mapUtils';
+import { GOOGLE_MAPS_API_KEY } from '../utils/config';
 
 interface BusMapProps {
   selectedRoute: string | null;
@@ -61,7 +62,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
       <MapLoader mapLoaded={mapLoaded} />
       
       <LoadScript 
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "AIzaSyAeL_NsKhDPz8upg9-U29IVe_qCmxqvCoc"}
+        googleMapsApiKey={GOOGLE_MAPS_API_KEY}
         libraries={libraries}
       >
         <GoogleMap
