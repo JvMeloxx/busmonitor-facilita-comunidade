@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { MapPin, BusFront } from 'lucide-react';
 import { busRoutes, recentUpdates } from '../data/busData';
-import { GoogleMap, LoadScript, LoadScriptProps } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Libraries } from '@react-google-maps/api';
 import { toast } from 'sonner';
 import MapLoader from './maps/MapLoader';
 import RoutePolyline from './maps/RoutePolyline';
@@ -44,9 +44,6 @@ const mapStyles = [
   }
 ];
 
-// Definindo o tipo de biblioteca corretamente
-type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
-
 const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [activeStopIndex, setActiveStopIndex] = useState<number | null>(null);
@@ -54,7 +51,7 @@ const RouteMap = ({ routeId, routeColor }: RouteMapProps) => {
   const [showBusStops, setShowBusStops] = useState(true);
   const [activePlacesStop, setActivePlacesStop] = useState<string | null>(null);
   
-  // Ajustando o useMemo para usar o tipo correto
+  // Usando o tipo correto diretamente da biblioteca
   const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const route = busRoutes.find(r => r.id === routeId);

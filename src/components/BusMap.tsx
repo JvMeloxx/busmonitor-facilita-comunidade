@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { GoogleMap, LoadScript, LoadScriptProps } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Libraries } from '@react-google-maps/api';
 import { toast } from 'sonner';
 import { busRoutes, recentUpdates } from '../data/busData';
 import MapLoader from './maps/MapLoader';
@@ -42,11 +42,8 @@ const mapStyles = [
   }
 ];
 
-// Definindo o tipo de biblioteca corretamente
-type Libraries = ("drawing" | "geometry" | "localContext" | "places" | "visualization")[];
-
 const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
-  // Ajustando o useMemo para usar o tipo correto
+  // Usando o tipo correto diretamente da biblioteca
   const libraries = useMemo<Libraries>(() => ["places"], []);
   
   const [mapLoaded, setMapLoaded] = useState(false);

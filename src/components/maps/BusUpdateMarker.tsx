@@ -8,8 +8,8 @@ interface BusUpdate {
   time: string;
   status: string;
   coordinates: {
-    x: string;
-    y: string;
+    x: string | number;
+    y: string | number;
   };
   hasIssue: boolean;
 }
@@ -38,13 +38,22 @@ const BusUpdateMarker = ({
   onCloseClick
 }: BusUpdateMarkerProps) => {
   try {
-    const y = Number(update.coordinates.y);
-    const x = Number(update.coordinates.x);
+    // Converter as coordenadas para números
+    const xValue = typeof update.coordinates.x === 'string' ? 
+      parseFloat(update.coordinates.x.replace('%', '')) : update.coordinates.x;
+    const yValue = typeof update.coordinates.y === 'string' ? 
+      parseFloat(update.coordinates.y.replace('%', '')) : update.coordinates.y;
     
-    if (isNaN(y) || isNaN(x)) {
+    if (isNaN(xValue) || isNaN(yValue)) {
       console.error(`Invalid coordinates for update:`, update.coordinates);
       return null;
     }
+    
+    // Normalizar valores percentuais para um range de 0-800 (para x) e 0-600 (para y)
+    const x = typeof update.coordinates.x === 'string' && update.coordinates.x.includes('%') ? 
+      (xValue / 100) * 800 : xValue;
+    const y = typeof update.coordinates.y === 'string' && update.coordinates.y.includes('%') ? 
+      (yValue / 100) * 600 : yValue;
     
     const position = {
       lat: mapCenter.lat + (y - 300) / 30000,
