@@ -114,7 +114,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
             
             return (
               <BusUpdateMarker
-                key={`update-${update.routeId}-${index}-${update.timestamp}`}
+                key={`update-${update.routeId}-${index}-${update.time}`}
                 update={update}
                 route={route}
                 index={index}
