@@ -8,13 +8,9 @@ export const fetchBusStopsHTTP = async (
   onSuccess: (stops: BusStop[]) => void,
   onError: () => void
 ): Promise<void> => {
-  // Coordenadas do centro de Luziânia
-  const luzianiaCenterLat = -16.2526;
-  const luzianiaCenterLng = -47.9503;
-  
   try {
     // Building the URL for the Places API request
-    const url = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${luzianiaCenterLat},${luzianiaCenterLng}&radius=10000&type=transit_station&key=${GOOGLE_MAPS_API_KEY}`;
+    const url = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${center.lat},${center.lng}&radius=10000&type=transit_station&key=${GOOGLE_MAPS_API_KEY}`;
     
     console.log("Realizando busca HTTP à API Places...");
     
@@ -80,13 +76,8 @@ export const fetchBusStopsJS = (
   try {
     const service = new window.google.maps.places.PlacesService(map);
     
-    // Coordenadas do centro de Luziânia
-    const luzianiaCenterLat = -16.2526;
-    const luzianiaCenterLng = -47.9503;
-    
-    // Aumentando o raio de busca
     const request = {
-      location: new google.maps.LatLng(luzianiaCenterLat, luzianiaCenterLng),
+      location: new google.maps.LatLng(center.lat, center.lng),
       radius: 10000, // 10km para cobrir toda a cidade
       type: 'transit_station'
     };

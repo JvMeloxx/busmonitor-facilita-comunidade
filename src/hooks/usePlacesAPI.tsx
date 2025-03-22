@@ -3,13 +3,20 @@ import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { fetchBusStopsHTTP, fetchBusStopsJS } from '../utils/placesApiUtils';
 import { getFallbackBusStops } from '../utils/mockBusStops';
+import { useBusStopsState } from './useBusStopsState';
 import { BusStop, UsePlacesAPIProps, UsePlacesAPIResult } from '../types/mapTypes';
 
 export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): UsePlacesAPIResult => {
-  const [busStops, setBusStops] = useState<BusStop[]>([]);
-  const [isPlacesApiEnabled, setIsPlacesApiEnabled] = useState(true);
-  const [lastSearchCenter, setLastSearchCenter] = useState<{ lat: number; lng: number } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { 
+    busStops, 
+    setBusStops, 
+    isPlacesApiEnabled, 
+    setIsPlacesApiEnabled,
+    lastSearchCenter,
+    setLastSearchCenter,
+    isLoading,
+    setIsLoading
+  } = useBusStopsState();
   
   // Use fallback stops when API fails
   const useFallbackStops = useCallback(() => {
@@ -17,7 +24,7 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
     setBusStops(mockBusStops);
     setLastSearchCenter(center);
     toast.info("Usando pontos de ônibus demonstrativos na área");
-  }, [center]);
+  }, [center, setBusStops, setLastSearchCenter]);
   
   // Try with JavaScript SDK method
   const tryJavaScriptSDK = useCallback(() => {
@@ -26,22 +33,18 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
       center,
       (newStops) => {
         setBusStops(newStops);
-        setLastSearchCenter({ lat: -16.2526, lng: -47.9503 });
+        setLastSearchCenter(center);
       },
       () => {
         setIsPlacesApiEnabled(false);
         useFallbackStops();
       }
     );
-  }, [map, center, useFallbackStops]);
+  }, [map, center, setBusStops, setLastSearchCenter, setIsPlacesApiEnabled, useFallbackStops]);
   
   // Fetch bus stops using HTTP endpoint
   const fetchStops = useCallback(async () => {
-    // Se já buscamos neste local e temos resultados, não busque novamente
-    if (lastSearchCenter && 
-        Math.abs(lastSearchCenter.lat - center.lat) < 0.01 && 
-        Math.abs(lastSearchCenter.lng - center.lng) < 0.01 &&
-        busStops.length > 0) {
+    if (shouldUseCache(lastSearchCenter, center, busStops.length)) {
       console.log("Usando resultados em cache para esta localização");
       return;
     }
@@ -52,17 +55,16 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
       center,
       (newStops) => {
         setBusStops(newStops);
-        setLastSearchCenter({ lat: -16.2526, lng: -47.9503 });
+        setLastSearchCenter(center);
       },
       () => {
-        // If HTTP request fails, try JavaScript SDK
         console.log("HTTP request failed, trying JavaScript SDK...");
         tryJavaScriptSDK();
       }
     );
     
     setIsLoading(false);
-  }, [center, lastSearchCenter, busStops.length, tryJavaScriptSDK]);
+  }, [center, lastSearchCenter, busStops.length, setBusStops, setLastSearchCenter, setIsLoading, tryJavaScriptSDK]);
 
   useEffect(() => {
     if (showBusStops && isPlacesApiEnabled) {
@@ -72,5 +74,19 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
 
   return { busStops, isPlacesApiEnabled, isLoading };
 };
+
+// Helper function to check if we should use cached results
+function shouldUseCache(
+  lastSearchCenter: { lat: number; lng: number } | null,
+  currentCenter: { lat: number; lng: number },
+  busStopsCount: number
+): boolean {
+  return !!(
+    lastSearchCenter && 
+    Math.abs(lastSearchCenter.lat - currentCenter.lat) < 0.01 && 
+    Math.abs(lastSearchCenter.lng - currentCenter.lng) < 0.01 &&
+    busStopsCount > 0
+  );
+}
 
 export default usePlacesAPI;
