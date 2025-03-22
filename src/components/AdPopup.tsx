@@ -76,14 +76,14 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
           {/* Advertisement content - image or video */}
           {advertisement && (
             <div 
-              className="w-full aspect-video flex items-center justify-center mb-4 rounded-md overflow-hidden cursor-pointer"
+              className="w-full cursor-pointer rounded-md overflow-hidden mb-4"
               onClick={handleAdClick}
             >
               {advertisement.type === 'image' ? (
                 <img 
                   src={advertisement.url} 
                   alt="Advertisement" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain"
                 />
               ) : (
                 <video 
@@ -94,6 +94,12 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
                   loop
                   className="w-full h-full object-cover"
                 />
+              )}
+              
+              {advertisement.url.includes("mamae") && (
+                <div className="bg-yellow-400 text-center text-black py-1 font-bold animate-pulse">
+                  CLIQUE AQUI PARA ENTRAR
+                </div>
               )}
             </div>
           )}

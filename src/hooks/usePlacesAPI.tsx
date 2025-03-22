@@ -47,11 +47,11 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps) =
     try {
       const service = new window.google.maps.places.PlacesService(map);
       
-      // Aumentando o raio de busca e adicionando mais tipos relevantes
+      // Aumentando o raio de busca
       const request = {
         location: center,
         radius: 10000, // Aumentando o raio para 10km
-        type: ['bus_station', 'transit_station'] // Tentando mais tipos de locais
+        type: 'transit_station' // Um único tipo, não um array
       };
 
       console.log("Realizando busca de pontos de ônibus...");
