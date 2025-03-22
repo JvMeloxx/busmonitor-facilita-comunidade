@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BusFront, MapPin, Route } from 'lucide-react';
+import { BusFront, MapPin, Route, Loader2 } from 'lucide-react';
 
 interface MapControlsProps {
   isPlacesApiEnabled: boolean;
@@ -8,6 +8,7 @@ interface MapControlsProps {
   setShowBusStops: (show: boolean) => void;
   showRoutes?: boolean;
   setShowRoutes?: (show: boolean) => void;
+  isLoading?: boolean;
 }
 
 export const MapControls = ({ 
@@ -15,7 +16,8 @@ export const MapControls = ({
   showBusStops, 
   setShowBusStops,
   showRoutes = true,
-  setShowRoutes = () => {}
+  setShowRoutes = () => {},
+  isLoading = false
 }: MapControlsProps) => {
   return (
     <>
@@ -28,7 +30,11 @@ export const MapControls = ({
               : 'bg-white text-gray-700'
           }`}
         >
-          <BusFront size={16} className="mr-2" />
+          {isLoading ? (
+            <Loader2 size={16} className="mr-2 animate-spin" />
+          ) : (
+            <BusFront size={16} className="mr-2" />
+          )}
           {showBusStops ? 'Ocultar Pontos' : 'Mostrar Pontos'}
         </button>
         
@@ -58,6 +64,12 @@ export const MapControls = ({
           <div className="flex items-center text-amber-600">
             <div className="w-3 h-3 bg-amber-500 mr-2"></div>
             <span className="text-xs">Usando pontos demonstrativos</span>
+          </div>
+        )}
+        {isLoading && (
+          <div className="flex items-center text-blue-600 mt-1">
+            <Loader2 size={12} className="animate-spin mr-2" />
+            <span className="text-xs">Buscando pontos de ônibus</span>
           </div>
         )}
       </div>

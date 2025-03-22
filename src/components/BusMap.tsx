@@ -35,7 +35,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
   const mapCenter = company ? companyMapCenters[company] : companyMapCenters.default;
   
   // Use the custom hook for Places API
-  const { busStops, isPlacesApiEnabled } = usePlacesAPI({
+  const { busStops, isPlacesApiEnabled, isLoading } = usePlacesAPI({
     map,
     showBusStops,
     center: mapCenter
@@ -145,6 +145,7 @@ const BusMap = ({ selectedRoute, setSelectedRoute }: BusMapProps) => {
         setShowBusStops={setShowBusStops}
         showRoutes={showRoutes}
         setShowRoutes={setShowRoutes}
+        isLoading={isLoading}
       />
     </div>
   );
