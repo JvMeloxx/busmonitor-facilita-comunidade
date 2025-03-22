@@ -2,6 +2,7 @@
 import React from 'react';
 import { Marker, InfoWindow } from '@react-google-maps/api';
 import { BusFront } from 'lucide-react';
+import { busStopIcon } from '../../utils/mapUtils';
 
 interface BusStop {
   id: string;
@@ -26,14 +27,7 @@ const BusStopMarker = ({ stop, activeMarker, onClick, onCloseClick }: BusStopMar
       key={stop.id}
       position={stop.position}
       onClick={() => onClick(stop.id)}
-      icon={{
-        path: 'M 0,0 m -2,-2 v 4 h 4 v -4 z',
-        fillColor: '#4171E1',
-        fillOpacity: 0.8,
-        scale: 2,
-        strokeColor: 'white',
-        strokeWeight: 1,
-      }}
+      icon={busStopIcon}
     >
       {activeMarker === stop.id && (
         <InfoWindow onCloseClick={onCloseClick}>

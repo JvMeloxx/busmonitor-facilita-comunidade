@@ -1,11 +1,3 @@
-
-/**
- * Funções utilitárias para manipulação de coordenadas e elementos do mapa
- */
-
-/**
- * Converte coordenadas SVG para coordenadas de latitude e longitude
- */
 export const getPolylineCoordinates = (svgPath: string, mapCenter: { lat: number; lng: number }) => {
   try {
     const coordinates = [];
@@ -41,12 +33,18 @@ export const getPolylineCoordinates = (svgPath: string, mapCenter: { lat: number
   }
 };
 
-/**
- * Estilos predefinidos para o mapa Google
- */
 export const mapStyles = [
   {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
     featureType: "poi.business",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.park",
     stylers: [{ visibility: "off" }]
   },
   {
@@ -70,18 +68,9 @@ export const mapStyles = [
     stylers: [{ visibility: "off" }]
   },
   {
-    featureType: "poi",
-    elementType: "labels",
-    stylers: [{ visibility: "off" }]
-  },
-  {
-    featureType: "poi",
-    stylers: [{ visibility: "simplified" }]
-  },
-  {
     featureType: "transit.station",
     elementType: "labels.icon",
-    stylers: [{ visibility: "on" }]
+    stylers: [{ visibility: "simplified" }]
   },
   {
     featureType: "transit.station.bus",
@@ -89,18 +78,21 @@ export const mapStyles = [
   }
 ];
 
-/**
- * Configuração padrão do container do mapa
- */
 export const mapContainerStyle = {
   width: '100%',
   height: '100%',
   borderRadius: '0.75rem',
 };
 
-/**
- * Coordenadas das empresas de ônibus
- */
+export const busStopIcon = {
+  path: 'M -2,-2 v 4 h 4 v -4 z',
+  fillColor: '#4171E1',
+  fillOpacity: 0.8,
+  scale: 2.5,
+  strokeColor: 'white',
+  strokeWeight: 1.5,
+};
+
 export const companyMapCenters = {
   tarifeZero: {
     lat: -16.2514467, 
@@ -120,8 +112,4 @@ export const companyMapCenters = {
   }
 };
 
-/**
- * Centro do mapa para Luziânia (padrão)
- */
 export const mapCenter = companyMapCenters.default;
-
