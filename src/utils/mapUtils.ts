@@ -46,6 +46,35 @@ export const getPolylineCoordinates = (svgPath: string, mapCenter: { lat: number
  */
 export const mapStyles = [
   {
+    featureType: "poi.business",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.attraction",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.government",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.place_of_worship",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.school",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi.sports_complex",
+    stylers: [{ visibility: "off" }]
+  },
+  {
+    featureType: "poi",
+    elementType: "labels",
+    stylers: [{ visibility: "off" }]
+  },
+  {
     featureType: "poi",
     stylers: [{ visibility: "simplified" }]
   },
@@ -95,3 +124,4 @@ export const companyMapCenters = {
  * Centro do mapa para Luziânia (padrão)
  */
 export const mapCenter = companyMapCenters.default;
+
