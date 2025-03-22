@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bus, Map, Users, Star } from 'lucide-react';
+import { Bus, Map, Star } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -14,13 +14,7 @@ const Index = () => {
       color: 'bg-blue-600',
       route: '/mapa'
     },
-    {
-      title: 'Contribuir',
-      description: 'Informe a localização de um ônibus',
-      icon: <Users size={28} />,
-      color: 'bg-green-600',
-      route: '/contribuir'
-    },
+    // "Contribuir" button removed temporarily
     {
       title: 'Rotas',
       description: 'Lista completa de linhas e horários',

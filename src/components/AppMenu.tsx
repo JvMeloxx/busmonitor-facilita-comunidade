@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bus, MapPin, User, Star, Settings, Info, Map, X, Home } from 'lucide-react';
@@ -29,13 +28,6 @@ const AppMenu = ({ className }: AppMenuProps) => {
       path: '/mapa',
       color: 'text-blue-600',
       description: 'Mapa com rotas e localizações'
-    },
-    { 
-      icon: User, 
-      label: 'Contribuir', 
-      path: '/contribuir',
-      color: 'text-green-600',
-      description: 'Informe a localização de um ônibus'
     },
     { 
       icon: Bus, 

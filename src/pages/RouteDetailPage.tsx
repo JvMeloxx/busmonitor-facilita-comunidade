@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Star, Clock, MapPin, Bus, AlertTriangle, CheckCircle, Calendar } from 'lucide-react';
@@ -25,7 +24,6 @@ const RouteDetailPage = () => {
   const route = busRoutes.find(r => r.id === id);
   
   useEffect(() => {
-    // Scroll to top when route changes
     window.scrollTo(0, 0);
   }, [id]);
   
@@ -53,7 +51,6 @@ const RouteDetailPage = () => {
   
   const recentUpdate = recentUpdates.find(update => update.routeId === route.id);
 
-  // Helper to check if schedule is empty for a given day
   const isScheduleEmpty = (day: 'mondayToFriday' | 'saturdayAndHoliday' | 'sunday') => {
     return (
       route.schedule[day].morning.length === 0 &&
@@ -218,7 +215,6 @@ const RouteDetailPage = () => {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Morning times */}
                     {route.schedule[selectedDay].morning.length > 0 && (
                       <Card className="p-4">
                         <h3 className="font-medium mb-3 flex items-center">
@@ -241,7 +237,6 @@ const RouteDetailPage = () => {
                       </Card>
                     )}
                     
-                    {/* Afternoon times */}
                     {route.schedule[selectedDay].afternoon.length > 0 && (
                       <Card className="p-4">
                         <h3 className="font-medium mb-3 flex items-center">
@@ -264,7 +259,6 @@ const RouteDetailPage = () => {
                       </Card>
                     )}
                     
-                    {/* Evening times */}
                     {route.schedule[selectedDay].evening.length > 0 && (
                       <Card className="p-4">
                         <h3 className="font-medium mb-3 flex items-center">
@@ -321,25 +315,15 @@ const RouteDetailPage = () => {
       </Tabs>
 
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
-        <div className="max-w-5xl mx-auto flex gap-3">
+        <div className="max-w-5xl mx-auto">
           <Button
-            variant="outline"
-            className="w-1/2"
-            asChild
-          >
-            <Link to="/contribuir">
-              <MapPin size={18} className="mr-2" />
-              Vi este ônibus
-            </Link>
-          </Button>
-          <Button
-            className="w-1/2"
+            className="w-full"
             style={{ backgroundColor: route.color }}
             asChild
           >
-            <Link to="/contribuir">
+            <Link to="/rotas">
               <Bus size={18} className="mr-2" />
-              Estou neste ônibus
+              Ver todas as rotas
             </Link>
           </Button>
         </div>
