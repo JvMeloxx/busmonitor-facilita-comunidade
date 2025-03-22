@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bus, MapPin, User, Star, Settings, Info, Map, X, Home } from 'lucide-react';
@@ -22,13 +23,7 @@ const AppMenu = ({ className }: AppMenuProps) => {
   const { companyName, companyColor, resetCompany } = useTheme();
 
   const menuItems = [
-    { 
-      icon: Map, 
-      label: 'Ver Ônibus', 
-      path: '/mapa',
-      color: 'text-blue-600',
-      description: 'Mapa com rotas e localizações'
-    },
+    // "Ver Ônibus" menu item removed temporarily
     { 
       icon: Bus, 
       label: 'Rotas', 

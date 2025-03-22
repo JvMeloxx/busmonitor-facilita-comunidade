@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from "./context/ThemeContext";
 import CompanySelectionPage from "./pages/CompanySelectionPage";
@@ -72,7 +72,8 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<CompanySelectionPage />} />
-              <Route path="/mapa" element={<MapPage />} />
+              {/* "Ver Ônibus" rota ainda está presente no código, mas redirecionada para rotas */}
+              <Route path="/mapa" element={<Navigate to="/rotas" replace />} />
               <Route path="/rotas" element={<RoutesPage />} />
               <Route path="/rotas/:id" element={<RouteDetailPage />} />
               <Route path="/contribuir" element={<ContributePage />} />

@@ -7,14 +7,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const mainButtons = [
-    {
-      title: 'Ver Ônibus',
-      description: 'Consulte rotas e horários dos ônibus',
-      icon: <Bus size={28} />,
-      color: 'bg-blue-600',
-      route: '/mapa'
-    },
-    // "Contribuir" button removed temporarily
+    // "Ver Ônibus" button removed temporarily
     {
       title: 'Rotas',
       description: 'Lista completa de linhas e horários',
