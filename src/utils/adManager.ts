@@ -18,7 +18,7 @@ const sampleAds: Advertisement[] = [
     id: 'ad1',
     type: 'image',
     url: '/lovable-uploads/c780d5d2-5695-4833-9b98-b7c399563ba8.png',
-    linkUrl: 'https://exemplo.com.br/mamae',
+    linkUrl: 'https://linktr.ee/acheeeimae',
     duration: 5,
     impressions: 0,
     clicks: 0
