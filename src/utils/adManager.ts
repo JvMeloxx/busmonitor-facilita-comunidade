@@ -30,7 +30,7 @@ const sampleAds: Advertisement[] = [
   {
     id: 'seu-anuncio-id',
     type: 'image',
-    url: 'https://uploaddeimagens.com.br/imagens/113Srss',
+    url: 'https://drive.google.com/file/d/1KBlkgoJFQUrrI958pPD6F6HfuZ7cYcHc/view?usp=sharing',
     linkUrl: 'https://chat.whatsapp.com/ComDoavbdFl9MIvdPaK9OC',
     duration: 5,
     impressions: 0,
