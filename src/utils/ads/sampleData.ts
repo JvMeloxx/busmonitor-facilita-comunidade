@@ -6,7 +6,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'anel-viario',
     type: 'image',
-    url: '/lovable-uploads/ce66bd0b-a07b-4df4-9d22-e23747dad9c9.png',
+    url: '/lovable-uploads/d2409ca8-42f4-48eb-ac9e-552052557a83.png',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
