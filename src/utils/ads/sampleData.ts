@@ -4,6 +4,17 @@ import { Advertisement } from './types';
 // Anúncios de amostra (a serem substituídos por um sistema real de gerenciamento de anúncios)
 export const sampleAds: Advertisement[] = [
   {
+    id: 'anel-viario',
+    type: 'image',
+    url: '/lovable-uploads/ce66bd0b-a07b-4df4-9d22-e23747dad9c9.png',
+    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
+    duration: 0,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true,
+    ctaText: 'CLIQUE AQUI PARA SABER MAIS'
+  },
+  {
     id: 'mamae',
     type: 'image',
     url: '/lovable-uploads/1e74d30e-26c9-4e34-8a98-9ecd5675e37f.png',

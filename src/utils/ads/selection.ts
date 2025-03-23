@@ -23,11 +23,15 @@ export const getRandomAd = (): Advertisement | undefined => {
   
   if (validAds.length === 0) return undefined;
   
-  // Tentar priorizar o anúncio "mamae" primeiro
+  // Priorizar o anúncio do "anel-viario" primeiro
+  const anelViarioAd = validAds.find(ad => ad.id === 'anel-viario');
+  if (anelViarioAd) return anelViarioAd;
+  
+  // Como segunda opção, tentar o anúncio "mamae"
   const mamaeAd = validAds.find(ad => ad.id === 'mamae');
   if (mamaeAd) return mamaeAd;
   
-  // Priorizar "seu-anuncio-id" como segunda opção
+  // Priorizar "seu-anuncio-id" como terceira opção
   const seuAnuncio = validAds.find(ad => ad.id === 'seu-anuncio-id');
   if (seuAnuncio) return seuAnuncio;
   
