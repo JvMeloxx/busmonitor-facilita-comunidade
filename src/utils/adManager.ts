@@ -1,6 +1,6 @@
 
 // Reexportar todos os módulos relacionados a anúncios
-export { Advertisement } from './ads/types';
+export type { Advertisement } from './ads/types';
 export { cacheAdsForOffline } from './ads/storage';
 export { shouldShowAds, markAdShownForSession } from './ads/display';
 export { getRandomAd } from './ads/selection';
