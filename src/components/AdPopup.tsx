@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Advertisement, trackAdImpression, trackAdClick, markAdShownForSession } from '@/utils/adManager';
+import { 
+  Advertisement, 
+  trackAdImpression, 
+  trackAdClick, 
+  markAdShownForSession 
+} from '@/utils/adManager';
 
 interface AdPopupProps {
   open: boolean;

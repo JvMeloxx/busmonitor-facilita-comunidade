@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,7 +15,7 @@ import NotFound from "./pages/NotFound";
 import SettingsPage from "./pages/SettingsPage";
 import AboutPage from "./pages/AboutPage";
 import AdPopup from "./components/AdPopup";
-import { getRandomAd, initAdSystem, shouldShowAds } from "./utils/adManager";
+import { getRandomAd, initAdSystem } from "./utils/adManager";
 
 const queryClient = new QueryClient();
 
