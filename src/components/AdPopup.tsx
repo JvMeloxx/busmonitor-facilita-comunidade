@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Advertisement, trackAdImpression, trackAdClick } from '@/utils/adManager';
+import { Advertisement, trackAdImpression, trackAdClick, markAdShownForSession } from '@/utils/adManager';
 
 interface AdPopupProps {
   open: boolean;
@@ -25,28 +25,36 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
     if (!open) return;
     
     // Reset countdown when popup opens
-    setCountdown(5);
-    setCanClose(false);
+    setCountdown(advertisement?.duration || 5);
+    setCanClose(advertisement?.duration === 0 ? true : false);
     
-    // Start countdown
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setCanClose(true);
-          setShowDoNotShowOption(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    // Mark ad as shown for this session
+    markAdShownForSession();
+    
+    // Start countdown only if there's a duration
+    if (advertisement?.duration && advertisement.duration > 0) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setCanClose(true);
+            setShowDoNotShowOption(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      return () => clearInterval(timer);
+    } else {
+      // No countdown needed
+      setShowDoNotShowOption(true);
+    }
     
     // Track ad impression when opened
     if (advertisement) {
       trackAdImpression(advertisement.id);
     }
-    
-    return () => clearInterval(timer);
   }, [open, advertisement]);
 
   const handleAdClick = () => {
@@ -67,16 +75,18 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
     <Dialog open={open} onOpenChange={(isOpen) => {
       if (!isOpen && canClose) onClose();
     }}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center">Anúncio</DialogTitle>
-        </DialogHeader>
+      <DialogContent className={advertisement?.fullScreen ? "sm:max-w-5xl w-[95vw] p-0 overflow-hidden" : "sm:max-w-md"}>
+        {!advertisement?.fullScreen && (
+          <DialogHeader>
+            <DialogTitle className="text-center">Anúncio</DialogTitle>
+          </DialogHeader>
+        )}
         
-        <div className="flex flex-col items-center justify-center my-4">
+        <div className={`flex flex-col items-center justify-center ${advertisement?.fullScreen ? 'p-0' : 'my-4'}`}>
           {/* Advertisement content - image or video */}
           {advertisement && (
             <div 
-              className="w-full cursor-pointer rounded-md overflow-hidden mb-4"
+              className="w-full cursor-pointer overflow-hidden"
               onClick={handleAdClick}
             >
               {advertisement.type === 'image' ? (
@@ -96,9 +106,9 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
                 />
               )}
               
-              {advertisement.url.includes("mamae") && (
-                <div className="bg-yellow-400 text-center text-black py-1 font-bold animate-pulse">
-                  CLIQUE AQUI PARA ENTRAR
+              {advertisement.ctaText && (
+                <div className="bg-yellow-400 text-center text-black py-2 px-4 font-bold text-lg animate-pulse">
+                  {advertisement.ctaText}
                 </div>
               )}
             </div>
@@ -110,33 +120,36 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
             </div>
           )}
           
-          <div className="flex flex-col w-full gap-2">
-            <Button
-              variant="outline"
-              disabled={!canClose}
-              className="w-full"
-              onClick={onClose}
-            >
-              {canClose ? (
-                <>
-                  <X className="mr-2 h-4 w-4" />
-                  Fechar anúncio
-                </>
-              ) : (
-                `Aguarde ${countdown} segundos...`
-              )}
-            </Button>
-            
-            {showDoNotShowOption && (
+          {/* Don't show the buttons if it's a full screen ad - we rely on the yellow bar instead */}
+          {!advertisement?.fullScreen && (
+            <div className="flex flex-col w-full gap-2 px-4 pb-4 pt-2">
               <Button
-                variant="ghost"
-                className="w-full text-sm"
-                onClick={handleDoNotShowToday}
+                variant="outline"
+                disabled={!canClose}
+                className="w-full"
+                onClick={onClose}
               >
-                Não mostrar novamente hoje
+                {canClose ? (
+                  <>
+                    <X className="mr-2 h-4 w-4" />
+                    Fechar anúncio
+                  </>
+                ) : (
+                  `Aguarde ${countdown} segundos...`
+                )}
               </Button>
-            )}
-          </div>
+              
+              {showDoNotShowOption && (
+                <Button
+                  variant="ghost"
+                  className="w-full text-sm"
+                  onClick={handleDoNotShowToday}
+                >
+                  Não mostrar novamente hoje
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

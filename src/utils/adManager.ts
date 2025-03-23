@@ -10,10 +10,23 @@ export interface Advertisement {
   endDate?: string;
   impressions?: number;
   clicks?: number;
+  fullScreen?: boolean;
+  ctaText?: string;
 }
 
 // Sample advertisements (to be replaced with real ad management system)
 const sampleAds: Advertisement[] = [
+  {
+    id: 'mamae',
+    type: 'image',
+    url: '/lovable-uploads/c3d505e6-df6e-4d05-872d-654bb2c23b18.png',
+    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
+    duration: 0,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true,
+    ctaText: 'CLIQUE AQUI PARA ENTRAR'
+  },
   {
     id: 'ad1',
     type: 'image',
@@ -37,6 +50,7 @@ const sampleAds: Advertisement[] = [
 // Local storage keys
 const CACHED_ADS_KEY = 'cachedAds';
 const AD_STATS_KEY = 'adStats';
+const SESSION_AD_SHOWN_KEY = 'sessionAdShown';
 
 // Cache ads for offline use
 export const cacheAdsForOffline = () => {
@@ -63,7 +77,18 @@ export const shouldShowAds = (): boolean => {
     }
   }
   
+  // Check if ad was already shown in this session
+  const sessionAdShown = sessionStorage.getItem(SESSION_AD_SHOWN_KEY);
+  if (sessionAdShown === 'true') {
+    return false;
+  }
+  
   return true;
+};
+
+// Mark ad as shown for this session
+export const markAdShownForSession = () => {
+  sessionStorage.setItem(SESSION_AD_SHOWN_KEY, 'true');
 };
 
 // Get a random advertisement
@@ -85,6 +110,10 @@ export const getRandomAd = (): Advertisement | undefined => {
   });
   
   if (validAds.length === 0) return undefined;
+  
+  // Try to prioritize the "mamae" ad first
+  const mamaeAd = validAds.find(ad => ad.id === 'mamae');
+  if (mamaeAd) return mamaeAd;
   
   const randomIndex = Math.floor(Math.random() * validAds.length);
   return validAds[randomIndex];

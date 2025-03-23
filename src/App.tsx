@@ -33,23 +33,6 @@ const App = () => {
       return;
     }
     
-    // Store current timestamp in localStorage when app is opened
-    const lastOpenTimestamp = localStorage.getItem('lastOpenTimestamp');
-    const currentTime = new Date().getTime();
-    
-    // Set the current time as the last open timestamp
-    localStorage.setItem('lastOpenTimestamp', currentTime.toString());
-    
-    // If there's a previous timestamp and it's been more than 10 minutes (600000ms)
-    // this helps to not show the ad if the user just refreshes the page
-    if (lastOpenTimestamp) {
-      const timeDifference = currentTime - parseInt(lastOpenTimestamp);
-      if (timeDifference < 600000) {
-        setShowAd(false);
-        return;
-      }
-    }
-    
     // Get a random ad and show it
     const ad = getRandomAd();
     if (ad) {
