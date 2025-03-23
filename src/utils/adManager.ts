@@ -6,6 +6,9 @@ export { shouldShowAds, markAdShownForSession } from './ads/display';
 export { getRandomAd } from './ads/selection';
 export { trackAdImpression, trackAdClick, getAdStats } from './ads/tracking';
 
+// Importar a função que precisamos usar
+import { cacheAdsForOffline } from './ads/storage';
+
 // Inicializar o sistema de anúncios
 export const initAdSystem = () => {
   // Limpar quaisquer flags de anúncios existentes para testes
