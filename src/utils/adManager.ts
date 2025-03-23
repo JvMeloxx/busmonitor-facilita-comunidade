@@ -28,6 +28,17 @@ const sampleAds: Advertisement[] = [
     ctaText: 'CLIQUE AQUI PARA ENTRAR'
   },
   {
+    id: 'seu-anuncio-id',
+    type: 'image',
+    url: 'https://uploaddeimagens.com.br/imagens/113Srss',
+    linkUrl: 'https://chat.whatsapp.com/ComDoavbdFl9MIvdPaK9OC',
+    duration: 5,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true,
+    ctaText: 'TEXTO DO BOTÃO DE AÇÃO'
+  },
+  {
     id: 'new-ad',
     type: 'image',
     url: 'https://uploaddeimagens.com.br/imagens/113Srss',
