@@ -28,6 +28,16 @@ const sampleAds: Advertisement[] = [
     ctaText: 'CLIQUE AQUI PARA ENTRAR'
   },
   {
+    id: 'new-ad',
+    type: 'image',
+    url: 'https://uploaddeimagens.com.br/imagens/113Srss',
+    linkUrl: 'https://example.com/new-ad',
+    duration: 5,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true
+  },
+  {
     id: 'ad1',
     type: 'image',
     url: '/lovable-uploads/c780d5d2-5695-4833-9b98-b7c399563ba8.png',
