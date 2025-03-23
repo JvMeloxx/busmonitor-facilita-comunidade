@@ -19,7 +19,7 @@ const sampleAds: Advertisement[] = [
   {
     id: 'mamae',
     type: 'image',
-    url: '/lovable-uploads/76ab3744-286e-46bb-a0dc-26cc926bbec8.png',
+    url: '/lovable-uploads/1e74d30e-26c9-4e34-8a98-9ecd5675e37f.png',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
@@ -30,7 +30,7 @@ const sampleAds: Advertisement[] = [
   {
     id: 'seu-anuncio-id',
     type: 'image',
-    url: '/lovable-uploads/76ab3744-286e-46bb-a0dc-26cc926bbec8.png',
+    url: '/lovable-uploads/1e74d30e-26c9-4e34-8a98-9ecd5675e37f.png',
     linkUrl: 'https://chat.whatsapp.com/ComDoavbdFl9MIvdPaK9OC',
     duration: 5,
     impressions: 0,
