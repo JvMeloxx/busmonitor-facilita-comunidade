@@ -30,7 +30,7 @@ const sampleAds: Advertisement[] = [
   {
     id: 'seu-anuncio-id',
     type: 'image',
-    url: 'https://drive.google.com/file/d/1KBlkgoJFQUrrI958pPD6F6HfuZ7cYcHc/view?usp=sharing',
+    url: '/lovable-uploads/upload-your-image-here.jpg', // Aqui você precisa fazer upload da sua imagem no projeto
     linkUrl: 'https://chat.whatsapp.com/ComDoavbdFl9MIvdPaK9OC',
     duration: 5,
     impressions: 0,
@@ -89,6 +89,9 @@ const getAdsSource = (): Advertisement[] => {
 
 // Check if we should show ads today
 export const shouldShowAds = (): boolean => {
+  // Reset the session ad shown flag for testing
+  sessionStorage.removeItem(SESSION_AD_SHOWN_KEY);
+  
   const doNotShowUntil = localStorage.getItem('doNotShowAdsUntil');
   if (doNotShowUntil) {
     const untilDate = new Date(doNotShowUntil);
@@ -136,6 +139,10 @@ export const getRandomAd = (): Advertisement | undefined => {
   const mamaeAd = validAds.find(ad => ad.id === 'mamae');
   if (mamaeAd) return mamaeAd;
   
+  // Priorize "seu-anuncio-id" as second option
+  const seuAnuncio = validAds.find(ad => ad.id === 'seu-anuncio-id');
+  if (seuAnuncio) return seuAnuncio;
+  
   const randomIndex = Math.floor(Math.random() * validAds.length);
   return validAds[randomIndex];
 };
@@ -182,6 +189,10 @@ export const getAdStats = () => {
 
 // Initialize the ad system
 export const initAdSystem = () => {
+  // Clear any existing ad flags for testing
+  localStorage.removeItem('doNotShowAdsUntil');
+  sessionStorage.removeItem(SESSION_AD_SHOWN_KEY);
+  
   // Cache ads for offline use
   cacheAdsForOffline();
   
