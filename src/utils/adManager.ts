@@ -19,7 +19,7 @@ const sampleAds: Advertisement[] = [
   {
     id: 'mamae',
     type: 'image',
-    url: '/lovable-uploads/c3d505e6-df6e-4d05-872d-654bb2c23b18.png',
+    url: '/lovable-uploads/76ab3744-286e-46bb-a0dc-26cc926bbec8.png',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
@@ -30,13 +30,13 @@ const sampleAds: Advertisement[] = [
   {
     id: 'seu-anuncio-id',
     type: 'image',
-    url: '/lovable-uploads/upload-your-image-here.jpg', // Aqui você precisa fazer upload da sua imagem no projeto
+    url: '/lovable-uploads/76ab3744-286e-46bb-a0dc-26cc926bbec8.png',
     linkUrl: 'https://chat.whatsapp.com/ComDoavbdFl9MIvdPaK9OC',
     duration: 5,
     impressions: 0,
     clicks: 0,
     fullScreen: true,
-    ctaText: 'TEXTO DO BOTÃO DE AÇÃO'
+    ctaText: 'CLIQUE AQUI PARA ENTRAR'
   },
   {
     id: 'new-ad',

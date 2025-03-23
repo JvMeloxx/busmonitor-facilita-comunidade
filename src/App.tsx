@@ -28,12 +28,7 @@ const App = () => {
     // Initialize the ad system
     initAdSystem();
     
-    // Check if we should show ads
-    if (!shouldShowAds()) {
-      return;
-    }
-    
-    // Get a random ad and show it
+    // Sempre mostrar o anúncio ao iniciar a aplicação
     const ad = getRandomAd();
     if (ad) {
       setCurrentAd(ad);
