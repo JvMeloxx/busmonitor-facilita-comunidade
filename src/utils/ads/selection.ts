@@ -6,11 +6,15 @@ import { shouldShowAds } from './display';
 // Obter um anúncio aleatório
 export const getRandomAd = (): Advertisement | undefined => {
   if (!shouldShowAds()) {
+    console.log('Ads disabled for this session');
     return undefined;
   }
   
   const ads = getAdsSource();
-  if (ads.length === 0) return undefined;
+  if (ads.length === 0) {
+    console.log('No ads available');
+    return undefined;
+  }
   
   const now = new Date();
   
@@ -21,20 +25,33 @@ export const getRandomAd = (): Advertisement | undefined => {
     return true;
   });
   
-  if (validAds.length === 0) return undefined;
+  if (validAds.length === 0) {
+    console.log('No valid ads available');
+    return undefined;
+  }
   
   // Priorizar o anúncio do "anel-viario" primeiro
   const anelViarioAd = validAds.find(ad => ad.id === 'anel-viario');
-  if (anelViarioAd) return anelViarioAd;
+  if (anelViarioAd) {
+    console.log('Selected anel-viario ad:', anelViarioAd);
+    return anelViarioAd;
+  }
   
   // Como segunda opção, tentar o anúncio "mamae"
   const mamaeAd = validAds.find(ad => ad.id === 'mamae');
-  if (mamaeAd) return mamaeAd;
+  if (mamaeAd) {
+    console.log('Selected mamae ad:', mamaeAd);
+    return mamaeAd;
+  }
   
   // Priorizar "seu-anuncio-id" como terceira opção
   const seuAnuncio = validAds.find(ad => ad.id === 'seu-anuncio-id');
-  if (seuAnuncio) return seuAnuncio;
+  if (seuAnuncio) {
+    console.log('Selected seu-anuncio-id ad:', seuAnuncio);
+    return seuAnuncio;
+  }
   
   const randomIndex = Math.floor(Math.random() * validAds.length);
+  console.log('Selected random ad:', validAds[randomIndex]);
   return validAds[randomIndex];
 };

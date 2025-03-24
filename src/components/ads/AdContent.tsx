@@ -27,13 +27,22 @@ const AdContent = ({ advertisement }: AdContentProps) => {
       className="w-full cursor-pointer overflow-hidden"
       onClick={handleAdClick}
     >
-      {advertisement.type === 'image' ? (
-        <img 
-          src={advertisement.url} 
-          alt="Advertisement" 
-          className="w-full h-auto object-contain"
-        />
-      ) : (
+      {advertisement.type === 'image' && (
+        <div className="flex justify-center w-full">
+          <img 
+            src={advertisement.url} 
+            alt="Anúncio" 
+            className="max-w-full h-auto object-contain"
+            onError={(e) => {
+              console.error(`Failed to load image: ${advertisement.url}`);
+              (e.target as HTMLImageElement).onerror = null;
+              (e.target as HTMLImageElement).src = "https://via.placeholder.com/320x480?text=Imagem+não+encontrada";
+            }}
+          />
+        </div>
+      )}
+      
+      {advertisement.type === 'video' && (
         <video 
           src={advertisement.url} 
           autoPlay 
