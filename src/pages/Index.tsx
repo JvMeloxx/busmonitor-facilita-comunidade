@@ -1,26 +1,18 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bus, Map, Star } from 'lucide-react';
+import { Bus, Map } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
 
   const mainButtons = [
-    // "Ver Ônibus" button removed temporarily
     {
       title: 'Rotas',
       description: 'Lista completa de linhas e horários',
       icon: <Map size={28} />,
       color: 'bg-purple-600',
       route: '/rotas'
-    },
-    {
-      title: 'Favoritos',
-      description: 'Acesse suas linhas preferidas',
-      icon: <Star size={28} />,
-      color: 'bg-orange-500',
-      route: '/favoritos'
     }
   ];
 
@@ -44,7 +36,7 @@ const Index = () => {
       </header>
 
       <main className="w-full max-w-4xl flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 gap-4 md:gap-6">
           {mainButtons.map((button, index) => (
             <div
               key={button.title}

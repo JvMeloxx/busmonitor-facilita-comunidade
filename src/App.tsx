@@ -10,12 +10,8 @@ import { SupabaseProvider } from "./context/SupabaseContext";
 import CompanySelectionPage from "./pages/CompanySelectionPage";
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
-import ContributePage from "./pages/ContributePage";
-import FavoritesPage from "./pages/FavoritesPage";
 import RouteDetailPage from "./pages/RouteDetailPage";
 import NotFound from "./pages/NotFound";
-import SettingsPage from "./pages/SettingsPage";
-import AboutPage from "./pages/AboutPage";
 import AdPopup from "./components/AdPopup";
 import { getRandomAd, initAdSystem } from "./utils/adManager";
 
@@ -56,10 +52,6 @@ const App = () => {
                 <Route path="/mapa" element={<Navigate to="/rotas" replace />} />
                 <Route path="/rotas" element={<RoutesPage />} />
                 <Route path="/rotas/:id" element={<RouteDetailPage />} />
-                <Route path="/contribuir" element={<ContributePage />} />
-                <Route path="/favoritos" element={<FavoritesPage />} />
-                <Route path="/configuracoes" element={<SettingsPage />} />
-                <Route path="/sobre" element={<AboutPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
