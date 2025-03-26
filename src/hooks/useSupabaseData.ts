@@ -1,5 +1,6 @@
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/supabase";
+import { supabase } from "../integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the valid table names as a literal union type to avoid recursion issues
@@ -115,7 +116,8 @@ export function useSupabaseData() {
         return data;
       },
       onSuccess: () => {
-        queryClient.invalidateQueries([table]);
+        // Corrigindo o erro de invalidação da query
+        queryClient.invalidateQueries({ queryKey: [table] });
         toast({
           title: "Sucesso!",
           description: `Ação de ${action} em ${table} realizada com sucesso.`,
@@ -156,7 +158,7 @@ export function useSupabaseData() {
     insert,
     update,
     remove,
-        updateByMatch,
-        removeByMatch,
+    updateByMatch,
+    removeByMatch,
   };
 }

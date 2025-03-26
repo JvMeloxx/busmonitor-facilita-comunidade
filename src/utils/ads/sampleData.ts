@@ -4,6 +4,17 @@ import { Advertisement } from './types';
 // Anúncios de amostra (a serem substituídos por um sistema real de gerenciamento de anúncios)
 export const sampleAds: Advertisement[] = [
   {
+    id: 'drive-ad',
+    type: 'image',
+    url: 'https://i.imgur.com/JVQgGMG.jpeg',
+    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
+    duration: 0,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true,
+    ctaText: 'SAIBA MAIS'
+  },
+  {
     id: 'anel-viario',
     type: 'image',
     url: '/lovable-uploads/d2409ca8-42f4-48eb-ac9e-552052557a83.png',
@@ -63,16 +74,5 @@ export const sampleAds: Advertisement[] = [
     duration: 5,
     impressions: 0,
     clicks: 0
-  },
-  {
-    id: 'drive-ad',
-    type: 'image',
-    url: 'https://placehold.co/800x600/007bff/white?text=Anuncio+Drive',
-    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
-    duration: 0,
-    impressions: 0,
-    clicks: 0,
-    fullScreen: true,
-    ctaText: 'SAIBA MAIS'
   }
 ];
