@@ -10,7 +10,6 @@ import { SupabaseProvider } from "./context/SupabaseContext";
 import CompanySelectionPage from "./pages/CompanySelectionPage";
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
-import RouteDetailPage from "./pages/RouteDetailPage";
 import NotFound from "./pages/NotFound";
 import AdPopup from "./components/AdPopup";
 import { getRandomAd, initAdSystem } from "./utils/adManager";
@@ -51,7 +50,6 @@ const App = () => {
                 {/* "Ver Ônibus" rota ainda está presente no código, mas redirecionada para rotas */}
                 <Route path="/mapa" element={<Navigate to="/rotas" replace />} />
                 <Route path="/rotas" element={<RoutesPage />} />
-                <Route path="/rotas/:id" element={<RouteDetailPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
