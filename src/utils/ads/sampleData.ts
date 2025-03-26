@@ -7,7 +7,7 @@ export const sampleAds: Advertisement[] = [
     id: 'drive-ad',
     type: 'image',
     url: 'https://i.imgur.com/9tduolG.jpg',
-    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
+    linkUrl: 'https://www.instagram.com/prefeituraluziania/',
     duration: 0,
     impressions: 0,
     clicks: 0,
