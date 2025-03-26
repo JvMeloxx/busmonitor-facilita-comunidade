@@ -10,7 +10,7 @@ export function useSupabaseData() {
 
   // Generic function to fetch data from Supabase
   const fetchData = async <T,>(
-    table: 'routes' | 'stops' | 'route_stops' | 'schedules' | 'favorite_routes',
+    table: string,
     options: {
       columns?: string;
       filter?: Record<string, any>;
@@ -56,7 +56,7 @@ export function useSupabaseData() {
 
   // Generic query hook for Supabase tables
   const useTableData = <T,>(
-    table: 'routes' | 'stops' | 'route_stops' | 'schedules' | 'favorite_routes',
+    table: string,
     options: {
       columns?: string;
       filter?: Record<string, any>;
@@ -94,7 +94,7 @@ export function useSupabaseData() {
   };
 
   // Generic mutation for inserting data
-  const useInsertData = <T,>(table: 'routes' | 'stops' | 'route_stops' | 'schedules' | 'favorite_routes') => {
+  const useInsertData = <T,>(table: string) => {
     return useMutation({
       mutationFn: async (newData: any) => {
         const { data, error } = await supabase

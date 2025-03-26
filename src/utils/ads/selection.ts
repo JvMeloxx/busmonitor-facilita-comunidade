@@ -30,18 +30,18 @@ export const getRandomAd = (): Advertisement | undefined => {
     return undefined;
   }
   
-  // Priorizar o anúncio do "anel-viario" primeiro
-  const anelViarioAd = validAds.find(ad => ad.id === 'anel-viario');
-  if (anelViarioAd) {
-    console.log('Selected anel-viario ad:', anelViarioAd);
-    return anelViarioAd;
-  }
-  
-  // Como segunda opção, tentar o anúncio "mamae"
+  // Priorizar o anúncio "mamae" primeiro
   const mamaeAd = validAds.find(ad => ad.id === 'mamae');
   if (mamaeAd) {
     console.log('Selected mamae ad:', mamaeAd);
     return mamaeAd;
+  }
+  
+  // Como segunda opção, tentar o anúncio do "anel-viario"
+  const anelViarioAd = validAds.find(ad => ad.id === 'anel-viario');
+  if (anelViarioAd) {
+    console.log('Selected anel-viario ad:', anelViarioAd);
+    return anelViarioAd;
   }
   
   // Priorizar "seu-anuncio-id" como terceira opção

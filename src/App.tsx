@@ -23,16 +23,16 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [showAd, setShowAd] = useState(false);
-  const [currentAd, setCurrentAd] = useState(getRandomAd());
+  const [currentAd, setCurrentAd] = useState(null);
 
   useEffect(() => {
     // Initialize the ad system
     initAdSystem();
     
-    // Sempre mostrar o anúncio ao iniciar a aplicação
-    const ad = getRandomAd();
-    if (ad) {
-      setCurrentAd(ad);
+    // Get the "mamae" ad specifically to show it first
+    const mamaead = getRandomAd();
+    if (mamaead) {
+      setCurrentAd(mamaead);
       setShowAd(true);
     }
   }, []);

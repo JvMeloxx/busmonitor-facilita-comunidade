@@ -17,7 +17,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'mamae',
     type: 'image',
-    url: '/lovable-uploads/1e74d30e-26c9-4e34-8a98-9ecd5675e37f.png',
+    url: '/lovable-uploads/7f28a874-75ad-446e-aef9-c216b7935d35.png',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
