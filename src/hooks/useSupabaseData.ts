@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the valid table names as a literal union type to avoid recursion issues
+// Define the valid table names as a literal type to avoid recursion issues
 type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
 
 export function useSupabaseData() {
@@ -116,7 +116,6 @@ export function useSupabaseData() {
         return data;
       },
       onSuccess: () => {
-        // Corrigindo o erro de invalidação da query
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
           title: "Sucesso!",
