@@ -107,7 +107,7 @@ export function useSupabaseData() {
           .select();
         
         if (error) throw error;
-        return data;
+        return data as unknown as T;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
