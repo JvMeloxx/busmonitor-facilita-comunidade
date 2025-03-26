@@ -1,181 +1,162 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/supabase";
+import { useToast } from "@/hooks/use-toast";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { useSupabase } from '@/context/SupabaseContext';
-import { Database } from '@/integrations/supabase/types';
-
-// Define the valid table names from the Database type
-// Using a readonly string array to avoid type recursion issues
+// Define the valid table names as a literal union type to avoid recursion issues
 type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
 
 export function useSupabaseData() {
   const queryClient = useQueryClient();
-  const { user } = useSupabase();
+  const { toast } = useToast();
 
-  // Generic function to fetch data from Supabase
-  const fetchData = async <T,>(
-    table: TableNames,
-    options: {
-      columns?: string;
-      filter?: Record<string, any>;
-      eq?: [string, any];
-      order?: { column: string; ascending?: boolean };
-    } = {}
-  ): Promise<T[]> => {
-    try {
-      let query = supabase.from(table).select(options.columns || '*');
-      
-      // Apply filters if provided
-      if (options.filter) {
-        Object.entries(options.filter).forEach(([key, value]) => {
-          query = query.filter(key, 'eq', value);
-        });
-      }
-      
-      // Apply single equals condition if provided
-      if (options.eq) {
-        query = query.eq(options.eq[0], options.eq[1]);
-      }
-      
-      // Apply ordering if provided
-      if (options.order) {
-        query = query.order(options.order.column, { 
-          ascending: options.order.ascending ?? true 
-        });
-      }
-      
-      const { data, error } = await query;
-      
-      if (error) {
-        throw error;
-      }
-      
-      return data as T[];
-    } catch (error) {
+  const fetch = async <T>(table: TableNames, id?: string | number, match?: Record<string, any>): Promise<T[]> => {
+    let query = supabase.from(table).select('*');
+
+    if (id) {
+      query = query.eq('id', id);
+    }
+
+    if (match) {
+      Object.keys(match).forEach(key => {
+        query = query.eq(key, match[key]);
+      });
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
       console.error(`Error fetching data from ${table}:`, error);
-      toast.error(`Erro ao buscar dados: ${(error as Error).message}`);
+      throw error;
+    }
+
+    return data as T[];
+  };
+
+  const useData = <T>(table: TableNames, id?: string | number, match?: Record<string, any>) => {
+    return useQuery<T[]>({
+      queryKey: [table, id, match],
+      queryFn: () => fetch<T>(table, id, match),
+    });
+  };
+
+  const performDatabaseAction = async (
+    table: TableNames,
+    action: 'insert' | 'update' | 'delete',
+    id?: string | number,
+    data?: Record<string, any>,
+    match?: Record<string, any>
+  ): Promise<any> => {
+    try {
+      switch (action) {
+        case 'insert': {
+          const result = await supabase.from(table).insert([data]).select();
+          if (result.error) throw result.error;
+          return result.data;
+        }
+        case 'update': {
+          let query = supabase.from(table);
+          if (id) {
+            query = query.eq('id', id);
+          } else if (match) {
+            Object.keys(match).forEach(key => {
+              query = query.eq(key, match[key]);
+            });
+          } else {
+            throw new Error('ID or match criteria is required for update.');
+          }
+          const result = await query.update(data).select();
+          if (result.error) throw result.error;
+          return result.data;
+        }
+        case 'delete': {
+          let query = supabase.from(table);
+          if (id) {
+            query = query.eq('id', id);
+          } else if (match) {
+            Object.keys(match).forEach(key => {
+              query = query.eq(key, match[key]);
+            });
+          } else {
+            throw new Error('ID or match criteria is required for delete.');
+          }
+          const result = await query.delete().select();
+          if (result.error) throw result.error;
+          return result.data;
+        }
+        default:
+          throw new Error(`Invalid action: ${action}`);
+      }
+    } catch (error: any) {
+      console.error(`Error performing ${action} on ${table}:`, error);
       throw error;
     }
   };
 
-  // Generic query hook for Supabase tables
-  const useTableData = <T,>(
+  const mutation = <T>(
     table: TableNames,
-    options: {
-      columns?: string;
-      filter?: Record<string, any>;
-      eq?: [string, any];
-      order?: { column: string; ascending?: boolean };
-      enabled?: boolean;
-      queryKey?: any[];
-    } = {}
+    action: 'insert' | 'update' | 'delete',
+    options?: {
+      id?: string | number;
+      data?: Record<string, any>;
+      match?: Record<string, any>;
+    }
   ) => {
-    return useQuery({
-      queryKey: options.queryKey || [table, options],
-      queryFn: () => fetchData<T>(table, options),
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      enabled: options.enabled !== false,
-    });
-  };
-
-  // Specifically fetch user's favorite routes
-  const useFavoriteRoutes = () => {
-    return useQuery({
-      queryKey: ['favorite_routes', user?.id],
-      queryFn: async () => {
-        if (!user) return [];
-        
-        const { data, error } = await supabase
-          .from('favorite_routes')
-          .select('*, routes(*)')
-          .eq('user_id', user.id);
+    return useMutation({
+      mutationFn: async (): Promise<any> => {
+        const { data, error } = await performDatabaseAction(
+          table,
+          action,
+          options?.id,
+          options?.data,
+          options?.match
+        );
         
         if (error) throw error;
         return data;
       },
-      enabled: !!user,
-    });
-  };
-
-  // Generic mutation for inserting data
-  const useInsertData = <T,>(table: TableNames) => {
-    return useMutation({
-      mutationFn: async (newData: any) => {
-        const { data, error } = await supabase
-          .from(table)
-          .insert(newData)
-          .select();
-        
-        if (error) throw error;
-        // Use a type assertion to resolve the excessive recursion error
-        return data as unknown as T;
-      },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [table] });
-        toast.success('Dados salvos com sucesso!');
+        queryClient.invalidateQueries([table]);
+        toast({
+          title: "Sucesso!",
+          description: `Ação de ${action} em ${table} realizada com sucesso.`,
+        });
       },
-      onError: (error: Error) => {
-        console.error(`Error inserting into ${table}:`, error);
-        toast.error(`Erro ao salvar dados: ${error.message}`);
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Erro!",
+          description: `Falha ao realizar ${action} em ${table}: ${error.message}`,
+        });
       }
     });
   };
 
-  // Toggle a route as favorite
-  const useToggleFavorite = () => {
-    return useMutation({
-      mutationFn: async ({ routeId }: { routeId: string }) => {
-        if (!user) throw new Error('User must be logged in to favorite routes');
-        
-        // Check if already favorite
-        const { data: existing } = await supabase
-          .from('favorite_routes')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('route_id', routeId)
-          .single();
-        
-        if (existing) {
-          // Remove from favorites
-          const { error } = await supabase
-            .from('favorite_routes')
-            .delete()
-            .eq('id', existing.id);
-          
-          if (error) throw error;
-          return { added: false, routeId };
-        } else {
-          // Add to favorites
-          const { error } = await supabase
-            .from('favorite_routes')
-            .insert({
-              user_id: user.id,
-              route_id: routeId
-            });
-          
-          if (error) throw error;
-          return { added: true, routeId };
-        }
-      },
-      onSuccess: (result) => {
-        queryClient.invalidateQueries({ queryKey: ['favorite_routes'] });
-        if (result.added) {
-          toast.success('Rota adicionada aos favoritos');
-        } else {
-          toast.info('Rota removida dos favoritos');
-        }
-      },
-      onError: (error: Error) => {
-        toast.error(`Erro ao atualizar favoritos: ${error.message}`);
-      }
-    });
+  const insert = <T>(table: TableNames, data: Record<string, any>) => {
+    return mutation<T>(table, 'insert', { data });
   };
+
+  const update = <T>(table: TableNames, id: string | number, data: Record<string, any>) => {
+    return mutation<T>(table, 'update', { id, data });
+  };
+
+  const remove = <T>(table: TableNames, id: string | number) => {
+    return mutation<T>(table, 'delete', { id });
+  };
+
+    const updateByMatch = <T>(table: TableNames, match: Record<string, any>, data: Record<string, any>) => {
+        return mutation<T>(table, 'update', { match, data });
+    };
+
+    const removeByMatch = <T>(table: TableNames, match: Record<string, any>) => {
+        return mutation<T>(table, 'delete', { match });
+    };
 
   return {
-    useTableData,
-    useInsertData,
-    useFavoriteRoutes,
-    useToggleFavorite
+    useData,
+    insert,
+    update,
+    remove,
+        updateByMatch,
+        removeByMatch,
   };
 }

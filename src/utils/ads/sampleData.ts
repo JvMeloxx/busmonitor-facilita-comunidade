@@ -17,7 +17,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'mamae',
     type: 'image',
-    url: 'https://via.placeholder.com/800x600?text=Anuncio+Mamae',
+    url: 'https://placehold.co/800x600/orange/white?text=Anuncio+Mamae',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
@@ -39,7 +39,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'new-ad',
     type: 'image',
-    url: 'https://via.placeholder.com/800x600?text=New+Ad',
+    url: 'https://placehold.co/800x600/green/white?text=New+Ad',
     linkUrl: 'https://example.com/new-ad',
     duration: 5,
     impressions: 0,
@@ -63,5 +63,16 @@ export const sampleAds: Advertisement[] = [
     duration: 5,
     impressions: 0,
     clicks: 0
+  },
+  {
+    id: 'drive-ad',
+    type: 'image',
+    url: 'https://placehold.co/800x600/007bff/white?text=Anuncio+Drive',
+    linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
+    duration: 0,
+    impressions: 0,
+    clicks: 0,
+    fullScreen: true,
+    ctaText: 'SAIBA MAIS'
   }
 ];
