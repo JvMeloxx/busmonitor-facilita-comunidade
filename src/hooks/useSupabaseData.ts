@@ -14,7 +14,7 @@ export function useSupabaseData() {
     let query = supabase.from(table).select('*');
 
     if (id) {
-      query = query.eq('id', id);
+      query = query.eq('id', id.toString());
     }
 
     if (match) {
@@ -57,7 +57,7 @@ export function useSupabaseData() {
         case 'update': {
           let query = supabase.from(table);
           if (id) {
-            query = query.eq('id', id);
+            query = query.eq('id', id.toString());
           } else if (match) {
             Object.keys(match).forEach(key => {
               query = query.eq(key, match[key]);
@@ -72,7 +72,7 @@ export function useSupabaseData() {
         case 'delete': {
           let query = supabase.from(table);
           if (id) {
-            query = query.eq('id', id);
+            query = query.eq('id', id.toString());
           } else if (match) {
             Object.keys(match).forEach(key => {
               query = query.eq(key, match[key]);
@@ -145,13 +145,13 @@ export function useSupabaseData() {
     return mutation<T>(table, 'delete', { id });
   };
 
-    const updateByMatch = <T>(table: TableNames, match: Record<string, any>, data: Record<string, any>) => {
-        return mutation<T>(table, 'update', { match, data });
-    };
+  const updateByMatch = <T>(table: TableNames, match: Record<string, any>, data: Record<string, any>) => {
+    return mutation<T>(table, 'update', { match, data });
+  };
 
-    const removeByMatch = <T>(table: TableNames, match: Record<string, any>) => {
-        return mutation<T>(table, 'delete', { match });
-    };
+  const removeByMatch = <T>(table: TableNames, match: Record<string, any>) => {
+    return mutation<T>(table, 'delete', { match });
+  };
 
   return {
     useData,
