@@ -8,12 +8,18 @@ interface SupabaseContextType {
   user: User | null;
   session: Session | null;
   isLoading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, metadata?: any) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const SupabaseContext = createContext<SupabaseContextType>({
   user: null,
   session: null,
-  isLoading: true
+  isLoading: true,
+  signIn: async () => {},
+  signUp: async () => {},
+  signOut: async () => {}
 });
 
 export const useSupabase = () => useContext(SupabaseContext);
@@ -51,8 +57,61 @@ export const SupabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, []);
 
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing in:', error);
+      toast.error(`Erro ao fazer login: ${(error as Error).message}`);
+      throw error;
+    }
+  };
+
+  const signUp = async (email: string, password: string, metadata?: any) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata
+        }
+      });
+      
+      if (error) throw error;
+      
+      toast.success('Cadastro realizado! Verifique seu email para confirmar.');
+    } catch (error) {
+      console.error('Error signing up:', error);
+      toast.error(`Erro ao criar conta: ${(error as Error).message}`);
+      throw error;
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast.error(`Erro ao sair: ${(error as Error).message}`);
+      throw error;
+    }
+  };
+
   return (
-    <SupabaseContext.Provider value={{ user, session, isLoading }}>
+    <SupabaseContext.Provider value={{ 
+      user, 
+      session, 
+      isLoading,
+      signIn,
+      signUp,
+      signOut
+    }}>
       {children}
     </SupabaseContext.Provider>
   );
