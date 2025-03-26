@@ -6,7 +6,8 @@ import { useSupabase } from '@/context/SupabaseContext';
 import { Database } from '@/integrations/supabase/types';
 
 // Define the valid table names from the Database type
-type TableNames = keyof Database['public']['Tables'];
+// Using a readonly string array to avoid type recursion issues
+type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
 
 export function useSupabaseData() {
   const queryClient = useQueryClient();
@@ -107,6 +108,7 @@ export function useSupabaseData() {
           .select();
         
         if (error) throw error;
+        // Use a type assertion to resolve the excessive recursion error
         return data as unknown as T;
       },
       onSuccess: () => {

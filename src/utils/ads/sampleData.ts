@@ -17,7 +17,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'mamae',
     type: 'image',
-    url: '/lovable-uploads/7f28a874-75ad-446e-aef9-c216b7935d35.png',
+    url: 'https://via.placeholder.com/800x600?text=Anuncio+Mamae',
     linkUrl: 'https://chat.whatsapp.com/Gn56ldmr7flJBnWmr1CRpQ',
     duration: 0,
     impressions: 0,
@@ -39,7 +39,7 @@ export const sampleAds: Advertisement[] = [
   {
     id: 'new-ad',
     type: 'image',
-    url: 'https://uploaddeimagens.com.br/imagens/113Srss',
+    url: 'https://via.placeholder.com/800x600?text=New+Ad',
     linkUrl: 'https://example.com/new-ad',
     duration: 5,
     impressions: 0,

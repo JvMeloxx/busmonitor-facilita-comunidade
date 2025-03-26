@@ -22,6 +22,10 @@ export const getRandomAd = (): Advertisement | undefined => {
   const validAds = ads.filter(ad => {
     if (ad.startDate && new Date(ad.startDate) > now) return false;
     if (ad.endDate && new Date(ad.endDate) < now) return false;
+    
+    // Verificar se a URL é válida (não vazia)
+    if (!ad.url || ad.url.trim() === '') return false;
+    
     return true;
   });
   
