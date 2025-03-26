@@ -3,6 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useSupabase } from '@/context/SupabaseContext';
+import { Database } from '@/integrations/supabase/types';
+
+// Define the valid table names from the Database type
+type TableNames = keyof Database['public']['Tables'];
 
 export function useSupabaseData() {
   const queryClient = useQueryClient();
@@ -10,7 +14,7 @@ export function useSupabaseData() {
 
   // Generic function to fetch data from Supabase
   const fetchData = async <T,>(
-    table: string,
+    table: TableNames,
     options: {
       columns?: string;
       filter?: Record<string, any>;
@@ -56,7 +60,7 @@ export function useSupabaseData() {
 
   // Generic query hook for Supabase tables
   const useTableData = <T,>(
-    table: string,
+    table: TableNames,
     options: {
       columns?: string;
       filter?: Record<string, any>;
@@ -94,7 +98,7 @@ export function useSupabaseData() {
   };
 
   // Generic mutation for inserting data
-  const useInsertData = <T,>(table: string) => {
+  const useInsertData = <T,>(table: TableNames) => {
     return useMutation({
       mutationFn: async (newData: any) => {
         const { data, error } = await supabase
