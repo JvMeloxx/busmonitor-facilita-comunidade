@@ -1,4 +1,5 @@
 
+
 // Interface para conteúdo de anúncios
 export interface Advertisement {
   id: string;
@@ -20,3 +21,4 @@ export interface Advertisement {
 export const CACHED_ADS_KEY = 'cachedAds';
 export const AD_STATS_KEY = 'adStats';
 export const SESSION_AD_SHOWN_KEY = 'sessionAdShown';
+

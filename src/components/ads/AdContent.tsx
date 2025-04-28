@@ -8,9 +8,9 @@ interface AdContentProps {
 
 const AdContent = ({ advertisement }: AdContentProps) => {
   const handleAdClick = () => {
-    if (advertisement?.linkUrl && advertisement.id) {
+    if (advertisement?.link_url && advertisement.id) {
       trackAdClick(advertisement.id);
-      window.open(advertisement.linkUrl, '_blank');
+      window.open(advertisement.link_url, '_blank');
     }
   };
 

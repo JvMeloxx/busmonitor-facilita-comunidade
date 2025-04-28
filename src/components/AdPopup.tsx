@@ -31,14 +31,14 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
     <Dialog open={open} onOpenChange={(isOpen) => {
       if (!isOpen && canClose) onClose();
     }}>
-      <DialogContent className={advertisement?.fullScreen ? "sm:max-w-5xl w-[95vw] p-0 overflow-hidden" : "sm:max-w-md"}>
-        {!advertisement?.fullScreen && (
+      <DialogContent className={advertisement?.full_screen ? "sm:max-w-5xl w-[95vw] p-0 overflow-hidden" : "sm:max-w-md"}>
+        {!advertisement?.full_screen && (
           <DialogHeader>
             <DialogTitle className="text-center">Anúncio</DialogTitle>
           </DialogHeader>
         )}
         
-        <div className={`flex flex-col items-center justify-center ${advertisement?.fullScreen ? 'p-0' : 'my-4'}`}>
+        <div className={`flex flex-col items-center justify-center ${advertisement?.full_screen ? 'p-0' : 'my-4'}`}>
           <AdContent advertisement={advertisement} />
           
           <AdControls 
@@ -47,7 +47,7 @@ const AdPopup = ({ open, onClose, advertisement }: AdPopupProps) => {
             showDoNotShowOption={showDoNotShowOption}
             onClose={onClose}
             onDoNotShowToday={handleDoNotShowToday}
-            fullScreen={advertisement?.fullScreen}
+            fullScreen={advertisement?.full_screen}
           />
         </div>
       </DialogContent>

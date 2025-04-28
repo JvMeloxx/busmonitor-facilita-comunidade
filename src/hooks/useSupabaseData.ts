@@ -33,13 +33,13 @@ export function useSupabaseData() {
   };
 
   const useData = <T>(table: TableNames, id?: string | number, match?: Record<string, any>) => {
-    return useQuery<T[]>({
+    return useQuery({
       queryKey: [table, id, match],
       queryFn: () => fetch<T>(table, id, match),
     });
   };
 
-  // Fixed type definitions for the performDatabaseAction function
+  // Perform database action with proper typing
   const performDatabaseAction = async <T>(
     table: TableNames,
     action: 'insert' | 'update' | 'delete',
@@ -101,12 +101,10 @@ export function useSupabaseData() {
     }
   };
 
-  // Create fixed versions of the mutation hooks
+  // Fixed insert mutation hook
   const insert = (table: TableNames) => {
     return useMutation({
-      mutationFn: async (data: Record<string, any>) => {
-        return await performDatabaseAction(table, 'insert', data);
-      },
+      mutationFn: (data: Record<string, any>) => performDatabaseAction(table, 'insert', data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
@@ -124,11 +122,12 @@ export function useSupabaseData() {
     });
   };
 
+  // Fixed update mutation hook
   const update = (table: TableNames) => {
     return useMutation({
-      mutationFn: async (params: { id: string; [key: string]: any }) => {
+      mutationFn: (params: { id: string; [key: string]: any }) => {
         const { id, ...data } = params;
-        return await performDatabaseAction(table, 'update', data, id);
+        return performDatabaseAction(table, 'update', data, id);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
@@ -147,11 +146,10 @@ export function useSupabaseData() {
     });
   };
 
+  // Fixed remove mutation hook
   const remove = (table: TableNames) => {
     return useMutation({
-      mutationFn: async (id: string) => {
-        return await performDatabaseAction(table, 'delete', undefined, id);
-      },
+      mutationFn: (id: string) => performDatabaseAction(table, 'delete', undefined, id),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
@@ -169,11 +167,11 @@ export function useSupabaseData() {
     });
   };
 
+  // Fixed updateByMatch mutation hook
   const updateByMatch = (table: TableNames) => {
     return useMutation({
-      mutationFn: async ({ match, data }: { match: Record<string, any>, data: Record<string, any> }) => {
-        return await performDatabaseAction(table, 'update', data, undefined, match);
-      },
+      mutationFn: ({ match, data }: { match: Record<string, any>, data: Record<string, any> }) => 
+        performDatabaseAction(table, 'update', data, undefined, match),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
@@ -191,11 +189,11 @@ export function useSupabaseData() {
     });
   };
 
+  // Fixed removeByMatch mutation hook
   const removeByMatch = (table: TableNames) => {
     return useMutation({
-      mutationFn: async (match: Record<string, any>) => {
-        return await performDatabaseAction(table, 'delete', undefined, undefined, match);
-      },
+      mutationFn: (match: Record<string, any>) => 
+        performDatabaseAction(table, 'delete', undefined, undefined, match),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
