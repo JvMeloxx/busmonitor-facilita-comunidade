@@ -4,14 +4,24 @@ import { supabase } from "../integrations/supabase/client";
 import { TableNames } from "./useSupabaseTypes";
 import { Database } from "../integrations/supabase/types";
 
+// Define a type that maps table names to their respective row types
+type TableTypes = {
+  advertisements: Database['public']['Tables']['advertisements']['Row'];
+  favorite_routes: Database['public']['Tables']['favorite_routes']['Row'];
+  route_stops: Database['public']['Tables']['route_stops']['Row'];
+  routes: Database['public']['Tables']['routes']['Row'];
+  schedules: Database['public']['Tables']['schedules']['Row'];
+  stops: Database['public']['Tables']['stops']['Row'];
+};
+
 /**
  * This function fetches data from a Supabase table
  */
-const fetch = async <T extends Record<string, any>>(
-  table: TableNames,
+const fetch = async <T extends TableNames>(
+  table: T,
   id?: string | number,
   match?: Record<string, any>
-): Promise<T[]> => {
+): Promise<TableTypes[T][]> => {
   let query = supabase.from(table).select('*');
 
   if (id) {
@@ -31,20 +41,20 @@ const fetch = async <T extends Record<string, any>>(
     throw error;
   }
 
-  // Use type assertion to safely convert the data
-  return (data || []) as T[];
+  // Return the correctly typed data
+  return (data || []) as TableTypes[T][];
 };
 
 /**
  * Custom hook that uses React Query to fetch and cache data from Supabase
  */
-export function useSupabaseQuery<T extends Record<string, any>>(
-  table: TableNames,
+export function useSupabaseQuery<T extends TableNames>(
+  table: T,
   id?: string | number,
   match?: Record<string, any>
 ) {
   return useQuery({
     queryKey: [table, id, match],
-    queryFn: () => fetch<T>(table, id, match),
+    queryFn: () => fetch(table, id, match),
   });
 }
