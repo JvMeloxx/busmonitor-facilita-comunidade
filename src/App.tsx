@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +10,7 @@ import { SupabaseProvider } from "./context/SupabaseContext";
 import CompanySelectionPage from "./pages/CompanySelectionPage";
 import MapPage from "./pages/MapPage";
 import RoutesPage from "./pages/RoutesPage";
+import RouteDetailPage from "./pages/RouteDetailPage";
 import NotFound from "./pages/NotFound";
 import AdPopup from "./components/AdPopup";
 import { getRandomAd, initAdSystem } from "./utils/adManager";
@@ -49,6 +51,7 @@ const App = () => {
                 <Route path="/" element={<CompanySelectionPage />} />
                 <Route path="/mapa" element={<Navigate to="/rotas" replace />} />
                 <Route path="/rotas" element={<RoutesPage />} />
+                <Route path="/rotas/:id" element={<RouteDetailPage />} />
                 <Route path="/anuncios" element={<AdvertisementDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
