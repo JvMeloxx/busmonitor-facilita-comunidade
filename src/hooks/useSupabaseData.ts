@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the valid table names as a literal type to avoid recursion issues
-type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
+// Define the valid table names as a literal type
+export type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
 
 export function useSupabaseData() {
   const queryClient = useQueryClient();
@@ -40,7 +40,7 @@ export function useSupabaseData() {
     });
   };
 
-  const performDatabaseAction = async (
+  const performDatabaseAction = async <T>(
     table: TableNames,
     action: 'insert' | 'update' | 'delete',
     id?: string | number,
@@ -48,41 +48,49 @@ export function useSupabaseData() {
     match?: Record<string, any>
   ): Promise<any> => {
     try {
+      let query;
+      
       switch (action) {
         case 'insert': {
-          const result = await supabase.from(table).insert([data]).select();
-          if (result.error) throw result.error;
-          return result.data;
+          const { data: result, error } = await supabase.from(table).insert([data]).select();
+          if (error) throw error;
+          return result;
         }
         case 'update': {
-          let query = supabase.from(table);
+          query = supabase.from(table);
+          
           if (id) {
-            query = query.eq('id', id.toString());
+            query = query.update(data).eq('id', id.toString());
           } else if (match) {
+            query = query.update(data);
             Object.keys(match).forEach(key => {
               query = query.eq(key, match[key]);
             });
           } else {
             throw new Error('ID or match criteria is required for update.');
           }
-          const result = await query.update(data).select();
-          if (result.error) throw result.error;
-          return result.data;
+          
+          const { data: result, error } = await query.select();
+          if (error) throw error;
+          return result;
         }
         case 'delete': {
-          let query = supabase.from(table);
+          query = supabase.from(table);
+          
           if (id) {
-            query = query.eq('id', id.toString());
+            query = query.delete().eq('id', id.toString());
           } else if (match) {
+            query = query.delete();
             Object.keys(match).forEach(key => {
               query = query.eq(key, match[key]);
             });
           } else {
             throw new Error('ID or match criteria is required for delete.');
           }
-          const result = await query.delete().select();
-          if (result.error) throw result.error;
-          return result.data;
+          
+          const { data: result, error } = await query.select();
+          if (error) throw error;
+          return result;
         }
         default:
           throw new Error(`Invalid action: ${action}`);
@@ -104,16 +112,13 @@ export function useSupabaseData() {
   ) => {
     return useMutation({
       mutationFn: async (): Promise<any> => {
-        const { data, error } = await performDatabaseAction(
+        return await performDatabaseAction<T>(
           table,
           action,
           options?.id,
           options?.data,
           options?.match
         );
-        
-        if (error) throw error;
-        return data;
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
