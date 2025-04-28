@@ -4,14 +4,16 @@ export interface Advertisement {
   id: string;
   type: 'image' | 'video';
   url: string;
-  linkUrl?: string;
-  duration?: number; // em segundos
+  link_url?: string;
+  duration: number; // em segundos
   startDate?: string;
   endDate?: string;
   impressions?: number;
   clicks?: number;
-  fullScreen?: boolean;
+  full_screen?: boolean;
   ctaText?: string;
+  active: boolean;
+  priority: number;
 }
 
 // Chaves para armazenamento local

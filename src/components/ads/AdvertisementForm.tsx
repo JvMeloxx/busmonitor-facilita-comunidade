@@ -67,6 +67,8 @@ export function AdvertisementForm({ onCancel, advertisement }: AdvertisementForm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { mutate } = insert('advertisements');
+    
+    // Call mutate with the form data
     mutate(formData, {
       onSuccess: () => {
         toast({

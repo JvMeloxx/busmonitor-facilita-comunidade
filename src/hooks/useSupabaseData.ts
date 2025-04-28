@@ -1,3 +1,4 @@
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -38,11 +39,12 @@ export function useSupabaseData() {
     });
   };
 
+  // Fixed type definitions for the performDatabaseAction function
   const performDatabaseAction = async <T>(
     table: TableNames,
     action: 'insert' | 'update' | 'delete',
-    id?: string | number,
     data?: Record<string, any>,
+    id?: string | number,
     match?: Record<string, any>
   ): Promise<any> => {
     try {
@@ -99,60 +101,116 @@ export function useSupabaseData() {
     }
   };
 
-  const mutation = <T>(
-    table: TableNames,
-    action: 'insert' | 'update' | 'delete',
-    options?: {
-      id?: string | number;
-      data?: Record<string, any>;
-      match?: Record<string, any>;
-    }
-  ) => {
+  // Create fixed versions of the mutation hooks
+  const insert = (table: TableNames) => {
     return useMutation({
-      mutationFn: async (): Promise<any> => {
-        return await performDatabaseAction<T>(
-          table,
-          action,
-          options?.id,
-          options?.data,
-          options?.match
-        );
+      mutationFn: async (data: Record<string, any>) => {
+        return await performDatabaseAction(table, 'insert', data);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [table] });
         toast({
           title: "Sucesso!",
-          description: `Ação de ${action} em ${table} realizada com sucesso.`,
+          description: `Ação de inserção em ${table} realizada com sucesso.`,
         });
       },
       onError: (error: any) => {
         toast({
           variant: "destructive",
           title: "Erro!",
-          description: `Falha ao realizar ${action} em ${table}: ${error.message}`,
+          description: `Falha ao inserir em ${table}: ${error.message}`,
         });
       }
     });
   };
 
-  const insert = <T>(table: TableNames, data: Record<string, any>) => {
-    return mutation<T>(table, 'insert', { data });
+  const update = (table: TableNames) => {
+    return useMutation({
+      mutationFn: async (params: { id: string; [key: string]: any }) => {
+        const { id, ...data } = params;
+        return await performDatabaseAction(table, 'update', data, id);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [table] });
+        toast({
+          title: "Sucesso!",
+          description: `Atualização em ${table} realizada com sucesso.`,
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Erro!",
+          description: `Falha ao atualizar ${table}: ${error.message}`,
+        });
+      }
+    });
   };
 
-  const update = <T>(table: TableNames, id: string | number, data: Record<string, any>) => {
-    return mutation<T>(table, 'update', { id, data });
+  const remove = (table: TableNames) => {
+    return useMutation({
+      mutationFn: async (id: string) => {
+        return await performDatabaseAction(table, 'delete', undefined, id);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [table] });
+        toast({
+          title: "Sucesso!",
+          description: `Remoção de ${table} realizada com sucesso.`,
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Erro!",
+          description: `Falha ao remover ${table}: ${error.message}`,
+        });
+      }
+    });
   };
 
-  const remove = <T>(table: TableNames, id: string | number) => {
-    return mutation<T>(table, 'delete', { id });
+  const updateByMatch = (table: TableNames) => {
+    return useMutation({
+      mutationFn: async ({ match, data }: { match: Record<string, any>, data: Record<string, any> }) => {
+        return await performDatabaseAction(table, 'update', data, undefined, match);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [table] });
+        toast({
+          title: "Sucesso!",
+          description: `Atualização em ${table} realizada com sucesso.`,
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Erro!",
+          description: `Falha ao atualizar ${table}: ${error.message}`,
+        });
+      }
+    });
   };
 
-  const updateByMatch = <T>(table: TableNames, match: Record<string, any>, data: Record<string, any>) => {
-    return mutation<T>(table, 'update', { match, data });
-  };
-
-  const removeByMatch = <T>(table: TableNames, match: Record<string, any>) => {
-    return mutation<T>(table, 'delete', { match });
+  const removeByMatch = (table: TableNames) => {
+    return useMutation({
+      mutationFn: async (match: Record<string, any>) => {
+        return await performDatabaseAction(table, 'delete', undefined, undefined, match);
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [table] });
+        toast({
+          title: "Sucesso!",
+          description: `Remoção de ${table} realizada com sucesso.`,
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Erro!",
+          description: `Falha ao remover ${table}: ${error.message}`,
+        });
+      }
+    });
   };
 
   return {
