@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { TableNames } from "./useSupabaseTypes";
+import { Database } from "../integrations/supabase/types";
 
 /**
  * This function fetches data from a Supabase table
@@ -30,7 +31,8 @@ const fetch = async <T extends Record<string, any>>(
     throw error;
   }
 
-  return data as T[];
+  // Use type assertion to safely convert the data
+  return (data || []) as T[];
 };
 
 /**
