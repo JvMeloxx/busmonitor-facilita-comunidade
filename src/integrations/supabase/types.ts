@@ -9,7 +9,205 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      advertisements: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta_text: string | null
+          duration: number
+          full_screen: boolean
+          id: string
+          link_url: string | null
+          priority: number
+          type: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta_text?: string | null
+          duration?: number
+          full_screen?: boolean
+          id?: string
+          link_url?: string | null
+          priority?: number
+          type: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta_text?: string | null
+          duration?: number
+          full_screen?: boolean
+          id?: string
+          link_url?: string | null
+          priority?: number
+          type?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      favorite_routes: {
+        Row: {
+          created_at: string
+          id: string
+          route_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          route_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          route_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorite_routes_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_stops: {
+        Row: {
+          created_at: string
+          id: string
+          route_id: string | null
+          stop_id: string | null
+          stop_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          route_id?: string | null
+          stop_id?: string | null
+          stop_order: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          route_id?: string | null
+          stop_id?: string | null
+          stop_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_stops_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      routes: {
+        Row: {
+          company: string
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          route_number: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          route_number: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          route_number?: string
+        }
+        Relationships: []
+      }
+      schedules: {
+        Row: {
+          created_at: string
+          day_of_week: string
+          departure_time: string
+          id: string
+          is_weekend: boolean | null
+          route_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: string
+          departure_time: string
+          id?: string
+          is_weekend?: boolean | null
+          route_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: string
+          departure_time?: string
+          id?: string
+          is_weekend?: boolean | null
+          route_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedules_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stops: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

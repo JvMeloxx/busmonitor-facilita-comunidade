@@ -1,10 +1,8 @@
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-// Define the valid table names as a literal type
-export type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops';
+export type TableNames = 'favorite_routes' | 'route_stops' | 'routes' | 'schedules' | 'stops' | 'advertisements';
 
 export function useSupabaseData() {
   const queryClient = useQueryClient();

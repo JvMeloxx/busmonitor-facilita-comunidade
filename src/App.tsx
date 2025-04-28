@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import RoutesPage from "./pages/RoutesPage";
 import NotFound from "./pages/NotFound";
 import AdPopup from "./components/AdPopup";
 import { getRandomAd, initAdSystem } from "./utils/adManager";
+import AdvertisementDashboard from "./pages/AdvertisementDashboard";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +47,9 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<CompanySelectionPage />} />
-                {/* "Ver Ônibus" rota ainda está presente no código, mas redirecionada para rotas */}
                 <Route path="/mapa" element={<Navigate to="/rotas" replace />} />
                 <Route path="/rotas" element={<RoutesPage />} />
+                <Route path="/anuncios" element={<AdvertisementDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
