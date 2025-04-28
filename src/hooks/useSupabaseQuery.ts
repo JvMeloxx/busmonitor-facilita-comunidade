@@ -3,8 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { TableNames } from "./useSupabaseTypes";
 
-// This function fetches data from a Supabase table
-const fetch = async <T>(
+/**
+ * This function fetches data from a Supabase table
+ */
+const fetch = async <T extends Record<string, any>>(
   table: TableNames,
   id?: string | number,
   match?: Record<string, any>
@@ -31,8 +33,10 @@ const fetch = async <T>(
   return data as T[];
 };
 
-// Custom hook that uses React Query to fetch and cache data from Supabase
-export function useSupabaseQuery<T>(
+/**
+ * Custom hook that uses React Query to fetch and cache data from Supabase
+ */
+export function useSupabaseQuery<T extends Record<string, any>>(
   table: TableNames,
   id?: string | number,
   match?: Record<string, any>
