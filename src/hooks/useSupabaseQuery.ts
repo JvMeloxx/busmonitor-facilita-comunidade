@@ -21,11 +21,11 @@ const fetch = async <T extends TableNames>(
   table: T,
   id?: string | number,
   match?: Record<string, any>
-): Promise<TableTypes[T][]> => {
+) => {
   let query = supabase.from(table).select('*');
 
   if (id) {
-    query = query.eq('id', id.toString());
+    query = query.eq('id', id);
   }
 
   if (match) {
@@ -41,8 +41,8 @@ const fetch = async <T extends TableNames>(
     throw error;
   }
 
-  // Return the correctly typed data
-  return (data || []) as TableTypes[T][];
+  // Return the data with the correct type
+  return data as unknown as TableTypes[T][];
 };
 
 /**

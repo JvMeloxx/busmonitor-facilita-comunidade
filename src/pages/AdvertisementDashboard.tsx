@@ -4,15 +4,16 @@ import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Image, Video } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { Advertisement } from '@/utils/ads/types';
 import { AdvertisementForm } from '@/components/ads/AdvertisementForm';
 import { AdvertisementList } from '@/components/ads/AdvertisementList';
+import { TableNames } from '@/hooks/useSupabaseTypes';
 
 export default function AdvertisementDashboard() {
   const [isAdding, setIsAdding] = useState(false);
   const { useData } = useSupabaseData();
-  const { data: ads, isLoading } = useData<Advertisement>('advertisements');
+  const { data, isLoading } = useData<'advertisements'>('advertisements');
   const { toast } = useToast();
 
   if (isLoading) {
@@ -22,6 +23,9 @@ export default function AdvertisementDashboard() {
       </div>
     );
   }
+
+  // Type assertion to ensure the data is treated as Advertisement[]
+  const advertisements = data as unknown as Advertisement[];
 
   return (
     <div className="container mx-auto py-8">
@@ -37,7 +41,7 @@ export default function AdvertisementDashboard() {
           {isAdding ? (
             <AdvertisementForm onCancel={() => setIsAdding(false)} />
           ) : (
-            <AdvertisementList advertisements={ads || []} />
+            <AdvertisementList advertisements={advertisements || []} />
           )}
         </CardContent>
       </Card>
