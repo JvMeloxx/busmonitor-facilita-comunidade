@@ -17,4 +17,14 @@ export const terminalJardimInga = {
   }
 };
 
+// Novo terminal: Garagem da Catedral
+export const garagemCatedral = {
+  name: "Garagem da Catedral",
+  // Coordenadas aproximadas: ajuste se necessário!
+  coordinates: {
+    lat: -16.222083,
+    lng: -47.963593
+  }
+};
+
 // Add other terminals as needed

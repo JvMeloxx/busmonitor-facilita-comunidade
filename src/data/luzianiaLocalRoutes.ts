@@ -1,5 +1,5 @@
 import { BusRoute } from "../types/busTypes";
-import { terminalLuziania } from "./terminals";
+import { terminalLuziania, garagemCatedral } from "./terminals";
 
 // Local Luziânia routes
 export const luzianiaLocalRoutes: BusRoute[] = [
@@ -273,9 +273,9 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     nextScheduledTime: "06:00",
     pathCoordinates: "M 50% 50% L 55% 35%"
   },
-  // NOVAS LINHAS
 
-  // 1. JARDIM SP- POSTO C. - JADRIM B. linha 116.1
+  // NOVAS LINHAS — todas passam para garagemCatedral menos id=chacaras-americanos-130 e linhas ZR
+
   {
     id: "jardim-sp-posto-c-jardim-b-116.1",
     number: "116.1",
@@ -284,7 +284,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#38bdf8",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       {
         id: "116-1-1",
@@ -326,7 +326,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 20% 45% L 25% 48% L 30% 50%"
   },
 
-  // 2. JARDIM SÃO PAULO-BANDEIRANTES linha 116.1
   {
     id: "jardim-sao-paulo-bandeirantes-116.1",
     number: "116.1",
@@ -335,7 +334,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#38bdf8",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       {
         id: "116-1-4",
@@ -371,7 +370,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 20% 45% L 32% 52%"
   },
 
-  // 3. JARDIM INGÁ X LUZIÂNIA-VIA PARQUE 10 - linha 310
   {
     id: "jardim-inga-luziania-via-parque10-310",
     number: "310",
@@ -380,7 +378,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#0ea5e9",
     frequency: "Horário fixo",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       {
         id: "310p10-1",
@@ -414,7 +412,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 10% 60% L 18% 62% L 50% 50%"
   },
 
-  // 4. JARDIM INGÁ X LUZIÂNIA-Via Hospital - linha 310
   {
     id: "jardim-inga-luziania-hospital-310",
     number: "310",
@@ -423,7 +420,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#0ea5e9",
     frequency: "Horários especiais",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "310h-1", name: "Jardim Ingá", address: "Jardim Ingá, Luziânia - GO", coordinates: { x: "12%", y: "63%" }},
       { id: "310h-2", name: "Hospital", address: "Hospital, Luziânia - GO", coordinates: { x: "46%", y: "46%" }},
@@ -442,7 +439,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 12% 63% L 46% 46% L 50% 50%"
   },
 
-  // 5a. JARDIM ingá x Luziânia linha 310 - Jardim Ingá para Luziânia
   {
     id: "jardim-inga-para-luziania-310",
     number: "310",
@@ -451,7 +447,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#0ea5e9",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "310jil-1", name: "Jardim Ingá", address: "Jardim Ingá, Luziânia - GO", coordinates: { x: "12%", y: "63%" }},
       { id: "310jil-2", name: "Terminal Rodoviário de Luziânia", address: "Terminal Rodoviário, Luziânia - GO", coordinates: { x: "50%", y: "50%" }}
@@ -477,7 +473,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 12% 63% L 50% 50%"
   },
 
-  // 5b. JARDIM ingá x Luziânia linha 310 - Luziânia para Jardim Ingá
   {
     id: "luziania-para-jardim-inga-310",
     number: "310",
@@ -486,7 +481,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#0ea5e9",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "310lji-1", name: "Terminal Rodoviário de Luziânia", address: "Terminal Rodoviário, Luziânia - GO", coordinates: { x: "50%", y: "50%" }},
       { id: "310lji-2", name: "Jardim Ingá", address: "Jardim Ingá, Luziânia - GO", coordinates: { x: "12%", y: "63%" }}
@@ -512,7 +507,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 50% 50% L 12% 63%"
   },
 
-  // 6a. CLUBE MILITAR-parque 08 e 10-ipê linha 332 (Clube Militar para Ipê)
   {
     id: "clube-militar-para-ipe-332",
     number: "332",
@@ -521,7 +515,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#a3e635",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "332cm-1", name: "Clube Militar", address: "Clube Militar, Luziânia - GO", coordinates: { x: "34%", y: "60%" }},
       { id: "332ipe-2", name: "Ipê", address: "Ipê, Luziânia - GO", coordinates: { x: "45%", y: "62%" }}
@@ -547,7 +541,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 34% 60% L 45% 62%"
   },
 
-  // 6b. CLUBE MILITAR-parque 08 e 10-ipê linha 332 (Ipê para Clube Militar)
   {
     id: "ipe-para-clube-militar-332",
     number: "332",
@@ -556,7 +549,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#a3e635",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "332ipe-1", name: "Ipê", address: "Ipê, Luziânia - GO", coordinates: { x: "45%", y: "62%" }},
       { id: "332cm-2", name: "Clube Militar", address: "Clube Militar, Luziânia - GO", coordinates: { x: "34%", y: "60%" }}
@@ -582,7 +575,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 45% 62% L 34% 60%"
   },
 
-  // 7a. GARAGEM - P.10 - ADMINISTRAÇÃO linha 334 (Garagem para Administração)
   {
     id: "garagem-para-administracao-334",
     number: "334",
@@ -591,7 +583,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#7c3aed",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "334g-1", name: "Garagem", address: "Garagem, Luziânia - GO", coordinates: { x: "22%", y: "54%" }},
       { id: "334adm-2", name: "Administração", address: "Administração, Luziânia - GO", coordinates: { x: "35%", y: "50%" }}
@@ -617,7 +609,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 22% 54% L 35% 50%"
   },
 
-  // 7b. GARAGEM - P.10 - ADMINISTRAÇÃO linha 334 (Administração para Garagem)
   {
     id: "administracao-para-garagem-334",
     number: "334",
@@ -626,7 +617,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#7c3aed",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "334adm-1", name: "Administração", address: "Administração, Luziânia - GO", coordinates: { x: "35%", y: "50%" }},
       { id: "334g-2", name: "Garagem", address: "Garagem, Luziânia - GO", coordinates: { x: "22%", y: "54%" }}
@@ -652,7 +643,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 35% 50% L 22% 54%"
   },
 
-  // 8. P. BELO HORIZONTE - MINGONE 1 e 2 - MARÍLIA CRUZEIRO - PRO LOTE linha 335
   {
     id: "prolote-335",
     number: "335",
@@ -661,7 +651,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     color: "#16a34a",
     frequency: "Horários programados conforme tabela",
     company: "tarifeZero",
-    terminal: terminalLuziania,
+    terminal: garagemCatedral,
     stops: [
       { id: "335-1", name: "Belo Horizonte", address: "Belo Horizonte, Luziânia - GO", coordinates: { x: "12%", y: "20%" }},
       { id: "335-2", name: "Mingone 1", address: "Mingone 1, Luziânia - GO", coordinates: { x: "15%", y: "18%" }},
@@ -682,7 +672,7 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     pathCoordinates: "M 12% 20% L 15% 18% L 17% 21% L 19% 24% L 22% 25%"
   },
 
-  // 9. CHÁCARAS AMERICANOS linha 130
+  // Manter os abaixo com terminalLuziania
   {
     id: "chacaras-americanos-130",
     number: "130",
@@ -712,8 +702,6 @@ export const luzianiaLocalRoutes: BusRoute[] = [
     nextScheduledTime: "07:30",
     pathCoordinates: "M 17% 33% L 50% 50%"
   },
-
-  // 10. ZONA RURAL (placeholders)
   {
     id: "zona-rural-maniratuba",
     number: "ZR-1",
