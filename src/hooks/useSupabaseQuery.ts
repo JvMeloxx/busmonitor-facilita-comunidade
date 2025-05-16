@@ -19,7 +19,7 @@ type TableTypes = {
  */
 const fetch = async <T extends TableNames>(
   table: T,
-  id?: string | number,
+  id?: string,
   match?: Record<string, any>
 ) => {
   let query = supabase.from(table).select('*');
@@ -50,7 +50,7 @@ const fetch = async <T extends TableNames>(
  */
 export function useSupabaseQuery<T extends TableNames>(
   table: T,
-  id?: string | number,
+  id?: string,
   match?: Record<string, any>
 ) {
   return useQuery({
