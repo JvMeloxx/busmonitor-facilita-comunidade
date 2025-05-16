@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { busRoutes } from '../data/busData';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from 'sonner';
 import { useTheme } from '../context/ThemeContext';
 
 // Import our new components
@@ -13,7 +12,6 @@ import SchedulesView from '@/components/routes/SchedulesView';
 
 const RoutesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [favorites, setFavorites] = useState<string[]>([]);
   const [dayFilter, setDayFilter] = useState<'mondayToFriday' | 'saturdayAndHoliday' | 'sunday'>('mondayToFriday');
   const { company, companyName } = useTheme();
 
@@ -45,16 +43,6 @@ const RoutesPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleFavorite = (routeId: string) => {
-    if (favorites.includes(routeId)) {
-      setFavorites(favorites.filter(id => id !== routeId));
-      toast.info('Removido dos favoritos');
-    } else {
-      setFavorites([...favorites, routeId]);
-      toast.success('Adicionado aos favoritos');
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <RoutesHeader companyName={companyName} />
@@ -74,9 +62,7 @@ const RoutesPage = () => {
 
             <TabsContent value="all">
               <RoutesList 
-                routes={filteredRoutes} 
-                favorites={favorites} 
-                toggleFavorite={toggleFavorite}
+                routes={filteredRoutes}
                 companyName={companyName}
               />
             </TabsContent>

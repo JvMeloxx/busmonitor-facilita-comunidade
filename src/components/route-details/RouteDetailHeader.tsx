@@ -1,27 +1,14 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, MapPin } from 'lucide-react';
+import { ArrowLeft, Clock, MapPin } from 'lucide-react';
 import { BusRoute } from '@/types/busTypes';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 
 interface RouteDetailHeaderProps {
   route: BusRoute;
 }
 
 const RouteDetailHeader = ({ route }: RouteDetailHeaderProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
-  
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    if (!isFavorite) {
-      toast.success('Adicionado aos favoritos');
-    } else {
-      toast.info('Removido dos favoritos');
-    }
-  };
-
   return (
     <>
       <header 
@@ -38,15 +25,6 @@ const RouteDetailHeader = ({ route }: RouteDetailHeaderProps) => {
               Linha {route.number}
             </span>
           </div>
-          
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full bg-white/20 backdrop-blur-sm text-white"
-            onClick={toggleFavorite}
-          >
-            <Star size={20} className={isFavorite ? "fill-white" : ""} />
-          </Button>
         </div>
       </header>
 

@@ -5,12 +5,10 @@ import RouteCard from './RouteCard';
 
 interface RoutesListProps {
   routes: BusRoute[];
-  favorites: string[];
-  toggleFavorite: (routeId: string) => void;
   companyName: string;
 }
 
-const RoutesList = ({ routes, favorites, toggleFavorite, companyName }: RoutesListProps) => {
+const RoutesList = ({ routes, companyName }: RoutesListProps) => {
   if (routes.length === 0) {
     return (
       <div className="text-center py-10">
@@ -24,9 +22,7 @@ const RoutesList = ({ routes, favorites, toggleFavorite, companyName }: RoutesLi
       {routes.map((route) => (
         <div key={route.id}>
           <RouteCard 
-            route={route} 
-            favorites={favorites} 
-            toggleFavorite={toggleFavorite} 
+            route={route}
           />
         </div>
       ))}
