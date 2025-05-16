@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { TableNames } from "./useSupabaseTypes";
@@ -24,8 +23,9 @@ const fetch = async <T extends TableNames>(
 ) => {
   let query = supabase.from(table).select('*');
 
-  if (id) {
-    query = query.eq('id', id);
+  // Only add eq for 'id' if id is defined
+  if (id !== undefined) {
+    query = query.eq('id', id as string); // id is always string in our schema
   }
 
   if (match) {
