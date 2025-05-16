@@ -24,9 +24,9 @@ const fetch = async <T extends TableNames>(
 ) => {
   let query = supabase.from(table).select('*');
 
-  // Only add eq for 'id' if id is defined
+  // Fix: Just cast id as string since our DB types indicate `id` is string.
   if (id !== undefined) {
-    query = query.eq('id', id as TableTypes[T] extends { id: infer U } ? U : string);
+    query = query.eq('id', id as string);
   }
 
   if (match) {
@@ -59,3 +59,4 @@ export function useSupabaseQuery<T extends TableNames>(
     queryFn: () => fetch(table, id, match),
   });
 }
+
