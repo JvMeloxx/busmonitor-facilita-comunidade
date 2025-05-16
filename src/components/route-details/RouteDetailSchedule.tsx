@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { BusRoute } from '@/types/busTypes';
@@ -139,10 +140,7 @@ const RouteDetailSchedule = ({ route, selectedDay, setSelectedDay }: RouteDetail
               <AlertTriangle size={18} className="text-yellow-500 shrink-0 mt-0.5" />
               <p className="text-sm">Aos domingos e feriados, o ônibus opera com horários reduzidos.</p>
             </div>
-            <div className="flex gap-2 items-start">
-              <CheckCircle size={18} className="text-green-600 shrink-0 mt-0.5" />
-              <p className="text-sm">Gratuito para todos os cidadãos. Basta embarcar!</p>
-            </div>
+            {/* Frase removida conforme solicitado */}
           </div>
         </Card>
       </div>
