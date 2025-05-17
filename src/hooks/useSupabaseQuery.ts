@@ -24,9 +24,9 @@ const fetch = async <T extends TableNames>(
 ) => {
   let query = supabase.from(table).select('*');
 
-  // Fix: Just cast id as string since our DB types indicate `id` is string.
+  // Só filtra por id se `id` for fornecido (todas as tabelas possuem coluna "id" do tipo string)
   if (id !== undefined) {
-    query = query.eq('id', id as string);
+    query = query.eq('id' as keyof TableTypes[T], id);
   }
 
   if (match) {
