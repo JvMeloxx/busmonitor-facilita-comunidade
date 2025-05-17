@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../integrations/supabase/client";
 import { TableNames } from "./useSupabaseTypes";
@@ -25,12 +26,12 @@ const fetch = async <T extends TableNames>(
 
   // Só filtra por id se `id` for fornecido (todas as tabelas possuem coluna "id" do tipo string)
   if (id !== undefined) {
-    query = query.eq('id', id);
+    query = query.eq('id', id); // Use plain string, not as any or keyof
   }
 
   if (match) {
     Object.keys(match).forEach(key => {
-      query = query.eq(key, match[key]);
+      query = query.eq(key as string, match[key]);
     });
   }
 
@@ -58,3 +59,4 @@ export function useSupabaseQuery<T extends TableNames>(
     queryFn: () => fetch(table, id, match),
   });
 }
+
