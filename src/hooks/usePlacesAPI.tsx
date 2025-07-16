@@ -5,6 +5,8 @@ import { fetchBusStopsHTTP, fetchBusStopsJS } from '../utils/placesApiUtils';
 import { getFallbackBusStops } from '../utils/mockBusStops';
 import { useBusStopsState } from './useBusStopsState';
 import { BusStop, UsePlacesAPIProps, UsePlacesAPIResult } from '../types/mapTypes';
+import { cacheUtils } from '../utils/cacheManager';
+import { useOfflineMode } from './useOfflineMode';
 
 export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): UsePlacesAPIResult => {
   const { 
@@ -18,11 +20,18 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
     setIsLoading
   } = useBusStopsState();
   
+  const { isOnline } = useOfflineMode();
+  
   // Use fallback stops when API fails
   const useFallbackStops = useCallback(() => {
     const mockBusStops = getFallbackBusStops(center);
     setBusStops(mockBusStops);
     setLastSearchCenter(center);
+    
+    // Cache fallback stops
+    const locationKey = `${center.lat.toFixed(4)}_${center.lng.toFixed(4)}`;
+    cacheUtils.cacheBusStops(mockBusStops, locationKey);
+    
     toast.info("Usando pontos de ônibus demonstrativos na área");
   }, [center, setBusStops, setLastSearchCenter]);
   
@@ -34,6 +43,10 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
       (newStops) => {
         setBusStops(newStops);
         setLastSearchCenter(center);
+        
+        // Cache successful results
+        const locationKey = `${center.lat.toFixed(4)}_${center.lng.toFixed(4)}`;
+        cacheUtils.cacheBusStops(newStops, locationKey);
       },
       () => {
         setIsPlacesApiEnabled(false);
@@ -44,6 +57,23 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
   
   // Fetch bus stops using HTTP endpoint
   const fetchStops = useCallback(async () => {
+    const locationKey = `${center.lat.toFixed(4)}_${center.lng.toFixed(4)}`;
+    
+    // If offline, try to use cached data first
+    if (!isOnline) {
+      const cachedStops = cacheUtils.getCachedBusStops(locationKey);
+      if (cachedStops) {
+        setBusStops(cachedStops);
+        setLastSearchCenter(center);
+        toast.info("Usando pontos de ônibus em cache (offline)");
+        return;
+      } else {
+        // No cached data available, use fallback
+        useFallbackStops();
+        return;
+      }
+    }
+    
     if (shouldUseCache(lastSearchCenter, center, busStops.length)) {
       console.log("Usando resultados em cache para esta localização");
       return;
@@ -56,6 +86,9 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
       (newStops) => {
         setBusStops(newStops);
         setLastSearchCenter(center);
+        
+        // Cache successful results
+        cacheUtils.cacheBusStops(newStops, locationKey);
       },
       () => {
         console.log("HTTP request failed, trying JavaScript SDK...");
@@ -64,7 +97,7 @@ export const usePlacesAPI = ({ map, showBusStops, center }: UsePlacesAPIProps): 
     );
     
     setIsLoading(false);
-  }, [center, lastSearchCenter, busStops.length, setBusStops, setLastSearchCenter, setIsLoading, tryJavaScriptSDK]);
+  }, [center, lastSearchCenter, busStops.length, setBusStops, setLastSearchCenter, setIsLoading, tryJavaScriptSDK, isOnline, useFallbackStops]);
 
   useEffect(() => {
     if (showBusStops && isPlacesApiEnabled) {
